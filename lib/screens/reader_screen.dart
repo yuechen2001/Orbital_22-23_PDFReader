@@ -1,7 +1,10 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:pdfreader2/models/document_model.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 
+// ignore: must_be_immutable
 class ReaderScreen extends StatefulWidget {
   ReaderScreen(this.doc, {Key? key}) : super(key: key);
   Document doc;
@@ -15,11 +18,9 @@ class _ReaderScreenState extends State<ReaderScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          backgroundColor: Colors.blueGrey,
+          backgroundColor: Colors.black87,
           title: Text(widget.doc.doc_title!),
         ),
-        body: Container(
-          child: SfPdfViewer.network(widget.doc.doc_url!),
-        ));
+        body: SfPdfViewer.file(File(widget.doc.doc_path!)));
   }
 }
