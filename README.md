@@ -23,5 +23,6 @@ dependencies:
 ### 2. Running the application on emulator
 - Ensure that your file path is set to the location where you downloaded the repo
 - Execute "flutter run" in the terminal 
+> If the error "Expected to find project root in current working directory" shows up, right click on the project file and select "open in integrated terminal" and execute the command again.
 - Select option 1(Windows)
 - Try out the app!
