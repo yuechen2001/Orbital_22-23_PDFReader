@@ -5,7 +5,8 @@
 - Download the repo
 - Install Flutter SDK 
 - Install IDE which can run Flutter SDK
-- Install all required dependencies(See below):
+- Install all required dependencies by running "flutter pub get"(See below):
+> Note: Just run the above command to install all the required dependencies for our application. The specified dependencies below are just for reference.
 ```
 dependencies:
   flutter:
