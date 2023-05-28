@@ -1,4 +1,3 @@
-import 'dart:collection';
 // ignore_for_file: non_constant_identifier_names
 
 class Document {
@@ -9,7 +8,7 @@ class Document {
   Document(this.doc_title, this.doc_path, this.doc_date);
 
   static List<Document> docList = [];
-  static Map<Document, int> docSet = HashMap();
+  // static Map<Document, int> docSet = HashMap();
 
   // todo: find faster way to do this
   // method that updates the doclist

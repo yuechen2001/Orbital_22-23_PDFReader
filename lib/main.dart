@@ -3,6 +3,8 @@ import 'package:pdfreader2/screens/home_screen.dart';
 import 'package:get/get.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+
   runApp(const MyApp());
 }
 

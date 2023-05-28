@@ -29,19 +29,19 @@ class _ReaderScreenState extends State<ReaderScreen> {
         // component 1: the side menu
         // todo: make this a sized box with infinite height
         SizedBox(
-            width: 100.0,
+            width: 200.0,
             height: double.infinity,
             child: Container(
               color: Colors.black87,
               child: Column(
                 children: [
                   const SizedBox(
-                    width: 100.0,
+                    width: 200.0,
                     height: 30.0,
                     child: SizedBox.shrink(),
                   ),
                   SizedBox(
-                    width: 100.0,
+                    width: 200.0,
                     height: 50.0,
                     child: TextButton.icon(
                         onPressed: () {},
@@ -55,7 +55,7 @@ class _ReaderScreenState extends State<ReaderScreen> {
                         )),
                   ),
                   SizedBox(
-                    width: 100.0,
+                    width: 200.0,
                     height: 50.0,
                     child: TextButton.icon(
                         onPressed: () {},
@@ -69,7 +69,7 @@ class _ReaderScreenState extends State<ReaderScreen> {
                         )),
                   ),
                   SizedBox(
-                    width: 100.0,
+                    width: 200.0,
                     height: 50.0,
                     child: TextButton.icon(
                         onPressed: () {},
@@ -83,7 +83,7 @@ class _ReaderScreenState extends State<ReaderScreen> {
                         )),
                   ),
                   SizedBox(
-                    width: 100.0,
+                    width: 200.0,
                     height: 50.0,
                     child: TextButton.icon(
                         onPressed: () {},
@@ -94,7 +94,7 @@ class _ReaderScreenState extends State<ReaderScreen> {
                   ),
                   const Spacer(),
                   SizedBox(
-                    width: 100.0,
+                    width: 200.0,
                     height: 50.0,
                     child: TextButton.icon(
                         onPressed: () {
@@ -120,6 +120,7 @@ class _ReaderScreenState extends State<ReaderScreen> {
             // add the top menu bar
             SizedBox(
                 height: 50.0,
+                width: double.infinity,
                 child: Container(
                   color: Colors.black87,
                   child: Row(
@@ -130,11 +131,12 @@ class _ReaderScreenState extends State<ReaderScreen> {
                         child: TextButton.icon(
                             onPressed: () {},
                             icon: const Icon(
-                              Icons.exit_to_app_sharp,
+                              Icons.edit,
                               color: Colors.white70,
                             ),
                             label: const Text(
                               "Textbox",
+                              overflow: TextOverflow.ellipsis,
                               style: TextStyle(color: Colors.white70),
                             )),
                       ),
@@ -143,7 +145,7 @@ class _ReaderScreenState extends State<ReaderScreen> {
                         child: TextButton.icon(
                             onPressed: () {},
                             icon: const Icon(
-                              Icons.exit_to_app_sharp,
+                              Icons.contrast,
                               color: Colors.white70,
                             ),
                             label: const Text(
@@ -156,7 +158,7 @@ class _ReaderScreenState extends State<ReaderScreen> {
                         child: TextButton.icon(
                             onPressed: () {},
                             icon: const Icon(
-                              Icons.exit_to_app_sharp,
+                              Icons.format_size,
                               color: Colors.white70,
                             ),
                             label: const Text(
@@ -169,7 +171,7 @@ class _ReaderScreenState extends State<ReaderScreen> {
                         child: TextButton.icon(
                             onPressed: () {},
                             icon: const Icon(
-                              Icons.exit_to_app_sharp,
+                              Icons.title,
                               color: Colors.white70,
                             ),
                             label: const Text(
@@ -182,7 +184,7 @@ class _ReaderScreenState extends State<ReaderScreen> {
                         child: TextButton.icon(
                             onPressed: () {},
                             icon: const Icon(
-                              Icons.exit_to_app_sharp,
+                              Icons.draw,
                               color: Colors.white70,
                             ),
                             label: const Text(
@@ -195,7 +197,7 @@ class _ReaderScreenState extends State<ReaderScreen> {
                         child: TextButton.icon(
                             onPressed: () {},
                             icon: const Icon(
-                              Icons.exit_to_app_sharp,
+                              Icons.favorite_outlined,
                               color: Colors.white70,
                             ),
                             label: const Text(
