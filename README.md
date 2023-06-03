@@ -6,7 +6,7 @@
 - Install Flutter SDK 
 - Install IDE which can run Flutter SDK
 - run `flutter doctor` in terminal and install all required software
-> Note: If Visual Studio needs to be installed, it is sufficient to install `Desktop Development with C++` and `Universal Windows Platform development`
+> Note: If Visual Studio needs to be installed, it is sufficient to install `Desktop Development with C++` and `Universal Windows Platform development`. <br />
 > For detailed instructions on how to install these dependencies, visit https://stackoverflow.com/questions/60334570/unable-to-find-suitable-visual-studio-toolchain-please-run-flutter-doctor-for
 - Install all required dependencies by running "flutter pub get"(See below):
 > Note: Just run the above command to install all the required dependencies for our application. The specified dependencies below are just for reference.
