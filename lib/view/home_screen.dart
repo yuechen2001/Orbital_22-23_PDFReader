@@ -6,7 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:pdfreader2/view/reader_screen.dart';
 
 import '../constants/widgets/document_tile.dart';
-import '../contorllers/document_controller.dart';
+import '../controllers/document_controller.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
