@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:pdfreader2/screens/home_screen.dart';
+import 'package:pdfreader2/view/home_screen.dart';
 import 'package:get/get.dart';
 
 void main() {
