@@ -1,10 +1,12 @@
+import 'package:get/get.dart';
 import 'package:pdfreader2/models/document_model.dart';
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:pdfreader2/screens/reader_screen.dart';
-import 'package:file_picker/file_picker.dart';
-import 'package:intl/intl.dart';
+import 'package:pdfreader2/view/reader_screen.dart';
+
+import '../constants/widgets/document_tile.dart';
+import '../controllers/document_controller.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -14,47 +16,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  // method that opens the local file system for users to pick files
-  // this will be called once the file button is clicked/tapped
-  Future<PlatformFile?> _pickFile() async {
-    // open the storage for user to choose 1 pdf file
-    // pickFiles parameter filters only for pdf files
-    FilePickerResult? result = await FilePicker.platform
-        .pickFiles(type: FileType.custom, allowedExtensions: ['pdf']);
-    // gc: no file is picked => terminate early
-    if (result == null) return null;
-    // get the file
-    PlatformFile file = result.files.first;
-    // return the platform file
-    return file;
-  }
-
-  // method to update the recent files list
-  List<ListTile> _updateRecent() {
-    return Document.docList
-        .map((doc) => ListTile(
-              onTap: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => ReaderScreen(doc)));
-              },
-              title: Text(
-                doc.doc_title!,
-                style: GoogleFonts.nunito(color: Colors.white70),
-                overflow: TextOverflow.ellipsis,
-              ),
-              // todo: add a size attribute
-              trailing: Text(
-                doc.doc_date!,
-                style: GoogleFonts.nunito(color: Colors.grey),
-              ),
-              leading: const Icon(
-                Icons.picture_as_pdf,
-                color: Colors.red,
-                size: 32.0,
-              ),
-            ))
-        .toList();
-  }
+  final DocumentController docCon = Get.put(DocumentController());
 
   @override
   Widget build(BuildContext context) {
@@ -131,7 +93,12 @@ class _HomeScreenState extends State<HomeScreen> {
                                         fontWeight: FontWeight.bold,
                                         color: Colors.white70)),
                               )),
-                          Column(children: _updateRecent())
+                          GetBuilder<DocumentController>(builder: (context) {
+                            return Column(
+                                children: docCon.docList
+                                    .map((doc) => DocumentTile(doc: doc))
+                                    .toList());
+                          })
                         ],
                       ),
                     ))),
@@ -157,34 +124,19 @@ class _HomeScreenState extends State<HomeScreen> {
                     const Text('Home', style: TextStyle(color: Colors.white70)),
                 // todo: add logic for changing pages
                 onTap: () {
-                  Navigator.pop(context);
+                  Get.back();
                 },
               ),
               ListTile(
                 title: const Text('Files',
                     style: TextStyle(color: Colors.white70)),
                 // todo: add logic for changing pages
-                onTap: () {
-                  // get the date and time
-                  DateTime now = DateTime.now();
-                  // format the date
-                  String formattedDate =
-                      DateFormat('EEEE, MMM d, yyyy').format(now);
+                onTap: () async {
                   // parse the String
-                  _pickFile().then((file) {
-                    // convert the file to a document object
-                    Document doc =
-                        Document(file?.name, file?.path, formattedDate);
-                    // update the master doclist
-                    Document.update(doc);
-                    _updateRecent();
-                    // open the file using the reader screen
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => ReaderScreen(doc)));
-                  });
-                  Navigator.pop(context);
+                  Document? doc = await docCon.createNewDocument();
+                  if (doc != null) {
+                    Get.to(ReaderScreen(doc: doc));
+                  }
                 },
               ),
               ListTile(
@@ -192,14 +144,14 @@ class _HomeScreenState extends State<HomeScreen> {
                       style: TextStyle(color: Colors.white70)),
                   // todo: add logic for changing pages
                   onTap: () {
-                    Navigator.pop(context);
+                    Get.back();
                   }),
               ListTile(
                   title: const Text('Settings',
                       style: TextStyle(color: Colors.white70)),
                   // todo: add logic for changing pages
                   onTap: () {
-                    Navigator.pop(context);
+                    Get.back();
                   })
             ],
           )),
