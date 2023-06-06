@@ -1,12 +1,20 @@
 import 'package:file_picker/file_picker.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:sqlite3/sqlite3.dart';
 
 import '../models/document_model.dart';
 
 class DocumentController extends GetxController {
-  List<Document> docList = [];
-  // static Map<Document, int> docSet = HashMap();
+  // open DB for recent files
+  final db = sqlite3.open('data/recent_files.db');
+  // result set from the database
+  late ResultSet resultSet;
+
+  // constructs an empty table
+  DocumentController() {
+    resultSet = ResultSet([], [], []);
+  }
 
   // method that opens the local file system for users to pick files
   // this will be called once the file button is clicked/tapped
@@ -33,7 +41,7 @@ class DocumentController extends GetxController {
       String formattedDate = DateFormat('EEEE, MMM d, yyyy').format(now);
       // convert the file to a document object
       Document doc = Document(picked.name, picked.path, formattedDate);
-      // update the master doclist
+      // update recent_files.db
       updateDocument(doc);
       return doc;
     } else {
@@ -42,15 +50,32 @@ class DocumentController extends GetxController {
     }
   }
 
-  // todo: find faster way to do this
   // method that updates the doclist
-  void updateDocument(Document document) {
-    // case where inside the doclist already => remove the old entry
-    if (docList.contains(document)) {
-      docList.remove(document);
+  void updateDocument(Document? document) {
+    if (document != null) {
+      // remove any old entry that has the exact same filepath as the current file
+      db.execute("""
+      DELETE FROM recent_files WHERE filepath='${document.doc_path}';
+      """);
+      // add the entry into the db
+      db.execute("""
+      INSERT INTO recent_files (filename, filepath, filedate, favourited)
+      VALUES('${document.doc_title}', '${document.doc_path}', '${document.doc_date}', false);
+      """);
     }
-    docList.insert(0, document);
-    // Refresh the UI to show new document
+    // update the recent files screen after update
+    resultSet = db.select('''
+    SELECT * FROM recent_files
+    ORDER BY documentid DESC
+    ''');
+    // call update to refresh the main screen
     update();
+  }
+
+  // method that clears the recent files db
+  void clearDB() {
+    db.execute('''
+    DELETE FROM recent_files
+    ''');
   }
 }

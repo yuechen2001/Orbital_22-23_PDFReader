@@ -80,25 +80,37 @@ class _HomeScreenState extends State<HomeScreen> {
                             ],
                           ),
                           DecoratedBox(
-                              decoration: const BoxDecoration(
-                                  border: BorderDirectional(
-                                      bottom:
-                                          BorderSide(color: Colors.white10))),
-                              child: Container(
-                                padding: const EdgeInsets.fromLTRB(
-                                    0.0, 15.0, 0.0, 20.0),
-                                child: Text("Recent Files",
-                                    style: GoogleFonts.roboto(
-                                        fontSize: 20.0,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.white70)),
-                              )),
-                          GetBuilder<DocumentController>(builder: (context) {
-                            return Column(
-                                children: docCon.docList
-                                    .map((doc) => DocumentTile(doc: doc))
-                                    .toList());
-                          })
+                            decoration: const BoxDecoration(
+                                border: BorderDirectional(
+                                    bottom: BorderSide(color: Colors.white10))),
+                            child: Container(
+                              padding: const EdgeInsets.fromLTRB(
+                                  0.0, 15.0, 0.0, 20.0),
+                              child: Text("Recent Files",
+                                  style: GoogleFonts.roboto(
+                                      fontSize: 20.0,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white70)),
+                            ),
+                          ),
+                          GetBuilder<DocumentController>(
+                            builder: (context) {
+                              docCon.updateDocument(null);
+                              return Column(
+                                children: docCon.resultSet
+                                    .map(
+                                      (row) => DocumentTile(
+                                        docString: row['filename'],
+                                        docPath: row['filepath'],
+                                        docDate: row['filedate'],
+                                        updateRecentCallback:
+                                            docCon.updateDocument,
+                                      ),
+                                    )
+                                    .toList(),
+                              );
+                            },
+                          )
                         ],
                       ),
                     ))),

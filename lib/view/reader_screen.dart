@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:pdfreader2/controllers/reader_countroller.dart';
+import 'package:pdfreader2/controllers/reader_controller.dart';
 import 'package:pdfreader2/models/document_model.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 import 'package:get/get.dart';
