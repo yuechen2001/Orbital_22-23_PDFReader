@@ -13,6 +13,16 @@ class DocumentController extends GetxController {
 
   // constructs an empty table
   DocumentController() {
+    db.execute('''
+      CREATE TABLE if not exists
+      recent_files (
+      documentid INTEGER PRIMARY KEY,
+      filename TEXT,
+      filepath TEXT,
+      filedate TEXT,
+      favourited BOOL DEFAULT false
+      );
+    ''');
     resultSet = ResultSet([], [], []);
   }
 
