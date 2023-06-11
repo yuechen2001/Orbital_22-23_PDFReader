@@ -1,15 +1,20 @@
 import 'package:file_picker/file_picker.dart';
 import 'package:get/get.dart';
+import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
 
 import '../models/document_model.dart';
 
 class DocumentController extends GetxController {
-  List<Document> docList = [];
-  // static Map<Document, int> docSet = HashMap();
+  bool isLoading = false;
+  late final Box<Document> recentFiles;
 
-  // method that opens the local file system for users to pick files
-  // this will be called once the file button is clicked/tapped
+  @override
+  void onInit() {
+    super.onInit();
+    recentFiles = Hive.box<Document>("recent_files");
+  }
+
   Future<PlatformFile?> pickFile() async {
     // open the storage for user to choose 1 pdf file
     // pickFiles parameter filters only for pdf files
@@ -19,7 +24,6 @@ class DocumentController extends GetxController {
     if (result == null) return null;
     // get the file
     PlatformFile file = result.files.first;
-    // return the platform file
     return file;
   }
 
@@ -27,30 +31,39 @@ class DocumentController extends GetxController {
     // pick new file
     PlatformFile? picked = await pickFile();
     if (picked != null) {
-      // get the date and time
       DateTime now = DateTime.now();
-      // format the date
       String formattedDate = DateFormat('EEEE, MMM d, yyyy').format(now);
+
       // convert the file to a document object
-      Document doc = Document(picked.name, picked.path, formattedDate);
-      // update the master doclist
-      updateDocument(doc);
+      Document doc = Document(picked.name, picked.path!, formattedDate, now);
+      recentFiles.put(picked.name, doc);
+
       return doc;
     } else {
-      // todo: think about what to do if user picks nothing
+      // TODO: think about what to do if user picks nothing
       return null;
     }
   }
 
-  // todo: find faster way to do this
-  // method that updates the doclist
-  void updateDocument(Document document) {
-    // case where inside the doclist already => remove the old entry
-    if (docList.contains(document)) {
-      docList.remove(document);
-    }
-    docList.insert(0, document);
-    // Refresh the UI to show new document
+  Document updateLastOpened({required String docTitle}) {
+    Document curr = recentFiles.get(docTitle)!;
+
+    // update the last opened time
+    DateTime now = DateTime.now();
+    String formattedDate = DateFormat('EEEE, MMM d, yyyy').format(now);
+
+    // convert the file to a document object
+    Document doc = Document(curr.docTitle, curr.docPath, formattedDate, now);
+    recentFiles.put(doc.docTitle, doc);
+
+    return doc;
+  }
+
+  void clearRecentFiles() {
+    recentFiles.clear();
     update();
   }
 }
+
+
+  // // method that clears the recent files db
