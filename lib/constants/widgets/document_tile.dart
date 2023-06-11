@@ -2,35 +2,33 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../controllers/document_controller.dart';
 import '../../models/document_model.dart';
 import '../../view/reader_screen.dart';
 
 class DocumentTile extends StatelessWidget {
   const DocumentTile(
       {super.key,
+      required this.docCon,
       required this.docString,
       required this.docPath,
-      required this.docDate,
-      required this.updateRecentCallback});
+      required this.docDate});
 
   // document parameters
+  final DocumentController docCon;
   final String docString;
   final String docPath;
   final String docDate;
-  // callback for updating the recent files list
-  final Function updateRecentCallback;
 
   @override
   Widget build(BuildContext context) {
-    Document doc = Document(docString, docPath, docDate);
     // TODO: ADD FAVOURITES BUTTON TO TOP RIGHT OF LISTTILE
     // TODO: ADD BORDER TO EACH OF THE PDF
     // TODO: ADD PADDING TO EACH OF THE PDF
     return ListTile(
-      onTap: () {
-        Get.to(ReaderScreen(doc: doc));
-        // put the document opened at the top of the recent files list
-        updateRecentCallback(doc);
+      onTap: () async {
+        Document openedDoc = docCon.updateLastOpened(docTitle: docString);
+        Get.to(ReaderScreen(doc: openedDoc));
       },
       title: Text(
         docString,

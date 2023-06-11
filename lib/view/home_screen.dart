@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:pdfreader2/models/document_model.dart';
 
 import 'package:flutter/material.dart';
@@ -93,24 +94,36 @@ class _HomeScreenState extends State<HomeScreen> {
                                       color: Colors.white70)),
                             ),
                           ),
-                          GetBuilder<DocumentController>(
-                            builder: (context) {
-                              docCon.updateDocument(null);
-                              return Column(
-                                children: docCon.resultSet
-                                    .map(
-                                      (row) => DocumentTile(
-                                        docString: row['filename'],
-                                        docPath: row['filepath'],
-                                        docDate: row['filedate'],
-                                        updateRecentCallback:
-                                            docCon.updateDocument,
-                                      ),
-                                    )
-                                    .toList(),
+                          ValueListenableBuilder(
+                            valueListenable: docCon.recentFiles.listenable(),
+                            builder: (context, Box<Document> box, _) {
+                              if (box.values.isEmpty) {
+                                return const Center(
+                                  child: Text("No Documents Found"),
+                                );
+                              }
+                              final sorted = box.values.toList()
+                                ..sort((a, b) =>
+                                    b.lastOpened.compareTo(a.lastOpened));
+                              return ListView.separated(
+                                scrollDirection: Axis.vertical,
+                                shrinkWrap: true,
+                                itemCount: sorted.length,
+                                itemBuilder: (context, index) {
+                                  Document doc = sorted[index];
+                                  return DocumentTile(
+                                      docString: doc.docTitle,
+                                      docDate: doc.docDate,
+                                      docPath: doc.docPath,
+                                      docCon: docCon);
+                                },
+                                separatorBuilder:
+                                    (BuildContext context, int index) {
+                                  return const Divider(color: Colors.white10);
+                                },
                               );
                             },
-                          )
+                          ),
                         ],
                       ),
                     ))),
@@ -155,9 +168,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   title: const Text('Favourites',
                       style: TextStyle(color: Colors.white70)),
                   // todo: add logic for changing pages
-                  onTap: () {
-                    Get.back();
-                  }),
+                  onTap: () {}),
               ListTile(
                   title: const Text('Settings',
                       style: TextStyle(color: Colors.white70)),

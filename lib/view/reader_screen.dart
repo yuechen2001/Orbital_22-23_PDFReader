@@ -243,7 +243,7 @@ class TopMenuBar extends State<_TopMenuBar> {
               ),
             )),
         // add the pdf viewer screen
-        Expanded(child: SfPdfViewer.file(File(widget.doc.doc_path!)))
+        Expanded(child: SfPdfViewer.file(File(widget.doc.docPath)))
       ],
     ));
   }
