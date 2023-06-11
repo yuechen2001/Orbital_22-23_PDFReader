@@ -1,19 +1,26 @@
-// ignore_for_file: non_constant_identifier_names
+import 'package:hive/hive.dart';
 
-class Document {
-  String? doc_title;
-  String? doc_path;
-  String? doc_date;
+part 'hiveModels/document_model.g.dart';
 
-  Document(this.doc_title, this.doc_path, this.doc_date);
+@HiveType(typeId: 0)
+class Document extends HiveObject {
+  @HiveField(0)
+  String docTitle;
+  @HiveField(1)
+  String docPath;
+  @HiveField(2)
+  String docDate;
+  @HiveField(3)
+  DateTime lastOpened;
+
+  Document(this.docTitle, this.docPath, this.docDate, this.lastOpened);
 
   // check whether two documents are equal to each other
   @override
   bool operator ==(Object other) =>
-      identical(this, other) ||
-      (other is Document && doc_path == other.doc_path);
+      identical(this, other) || (other is Document && docPath == other.docPath);
 
   // returns the hashcode of a document
   @override
-  int get hashCode => doc_path.hashCode;
+  int get hashCode => docPath.hashCode;
 }
