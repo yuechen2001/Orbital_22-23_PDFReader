@@ -21,13 +21,14 @@ class DocumentAdapter extends TypeAdapter<Document> {
       fields[1] as String,
       fields[2] as String,
       fields[3] as DateTime,
+      fields[4] as bool,
     );
   }
 
   @override
   void write(BinaryWriter writer, Document obj) {
     writer
-      ..writeByte(4)
+      ..writeByte(5)
       ..writeByte(0)
       ..write(obj.docTitle)
       ..writeByte(1)
@@ -35,7 +36,9 @@ class DocumentAdapter extends TypeAdapter<Document> {
       ..writeByte(2)
       ..write(obj.docDate)
       ..writeByte(3)
-      ..write(obj.lastOpened);
+      ..write(obj.lastOpened)
+      ..writeByte(4)
+      ..write(obj.favourited);
   }
 
   @override

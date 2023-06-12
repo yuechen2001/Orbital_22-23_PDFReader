@@ -112,10 +112,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                 itemBuilder: (context, index) {
                                   Document doc = sorted[index];
                                   return DocumentTile(
-                                      docString: doc.docTitle,
-                                      docDate: doc.docDate,
-                                      docPath: doc.docPath,
-                                      docCon: docCon);
+                                      docCon: docCon,
+                                      doc: doc,
+                                      );
                                 },
                                 separatorBuilder:
                                     (BuildContext context, int index) {
