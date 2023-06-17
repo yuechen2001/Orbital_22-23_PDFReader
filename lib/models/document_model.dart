@@ -15,7 +15,8 @@ class Document extends HiveObject {
   @HiveField(4)
   bool favourited;
 
-  Document(this.docTitle, this.docPath, this.docDate, this.lastOpened, this.favourited);
+  Document(this.docTitle, this.docPath, this.docDate, this.lastOpened,
+      this.favourited);
 
   // check whether two documents are equal to each other
   @override

@@ -1,19 +1,35 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
 import '../../controllers/document_controller.dart';
 import '../../models/document_model.dart';
 import '../../view/reader_screen.dart';
 
 class DocumentTile extends StatefulWidget {
-  DocumentTile({super.key, required this.docCon, required this.doc});
+  const DocumentTile({super.key, required this.docCon, required this.doc});
 
   // document parameters
   final DocumentController docCon;
   final Document doc;
 
-  // constants for icon
+  @override
+  State<DocumentTile> createState() => _DocumentTileState();
+}
+
+class _DocumentTileState extends State<DocumentTile> {
+  // function to toggle the favourite status of the document
+  void _toggleFavourite() {
+    if (widget.doc.favourited) {
+      widget.doc.favourited = false;
+    } else {
+      widget.doc.favourited = true;
+    }
+    widget.docCon.recentFiles.put(widget.doc.docTitle, widget.doc);
+  }
+
+  // constants for favourite icon of the document tile
   static const Icon unfavouritedIcon = Icon(
     Icons.star_border_outlined,
     color: Colors.white70,
@@ -24,41 +40,9 @@ class DocumentTile extends StatefulWidget {
   );
 
   @override
-  State<DocumentTile> createState() => _DocumentTileState(docCon, doc);
-}
-
-class _DocumentTileState extends State<DocumentTile> {
-  // constructor for the document
-  _DocumentTileState(
-    this.docCon,
-    this.doc,
-  ) {
-    _isFavourited = doc.favourited;
-  }
-
-  // fields for the DocumentTileState
-  DocumentController docCon;
-  Document doc;
-  late bool _isFavourited;
-
-  // function to toggle the favourited
-  void _toggleFavourite() {
-    setState(() {
-      // update the state the favourited field of the document
-      if (_isFavourited) {
-        _isFavourited = false;
-      } else {
-        _isFavourited = true;
-      }
-      doc.favourited = _isFavourited;
-      docCon.recentFiles.put(doc.docTitle, doc);
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
     return ListTile(
-      visualDensity: VisualDensity(vertical: 2),
+      visualDensity: const VisualDensity(vertical: 2),
       onTap: () async {
         Document openedDoc =
             widget.docCon.updateLastOpened(docTitle: widget.doc.docTitle);
@@ -75,10 +59,18 @@ class _DocumentTileState extends State<DocumentTile> {
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           GestureDetector(
-              onTap: _toggleFavourite,
-              child: _isFavourited
-                  ? DocumentTile.favouritedIcon
-                  : DocumentTile.unfavouritedIcon),
+            onTap: _toggleFavourite,
+            // tag the state of the favourites icon to the favourited state of
+            // the document
+            child: ValueListenableBuilder<Box<Document>>(
+              valueListenable: widget.docCon.recentFiles.listenable(),
+              builder: (context, box, _) {
+                return box.get(widget.doc.docTitle)!.favourited
+                    ? favouritedIcon
+                    : unfavouritedIcon;
+              },
+            ),
+          ),
           Text(
             widget.doc.docDate,
             style: GoogleFonts.nunito(color: Colors.grey, fontSize: 16.0),
