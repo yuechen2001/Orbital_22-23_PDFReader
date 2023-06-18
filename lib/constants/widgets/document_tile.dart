@@ -1,44 +1,81 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
 import '../../controllers/document_controller.dart';
 import '../../models/document_model.dart';
 import '../../view/reader_screen.dart';
 
-class DocumentTile extends StatelessWidget {
-  const DocumentTile(
-      {super.key,
-      required this.docCon,
-      required this.docString,
-      required this.docPath,
-      required this.docDate});
+class DocumentTile extends StatefulWidget {
+  const DocumentTile({super.key, required this.docCon, required this.doc});
 
   // document parameters
   final DocumentController docCon;
-  final String docString;
-  final String docPath;
-  final String docDate;
+  final Document doc;
+
+  @override
+  State<DocumentTile> createState() => _DocumentTileState();
+}
+
+class _DocumentTileState extends State<DocumentTile> {
+  // function to toggle the favourite status of the document
+  void _toggleFavourite() {
+    if (widget.doc.favourited) {
+      widget.doc.favourited = false;
+    } else {
+      widget.doc.favourited = true;
+    }
+    widget.docCon.recentFiles.put(widget.doc.docTitle, widget.doc);
+  }
+
+  // constants for favourite icon of the document tile
+  static const Icon unfavouritedIcon = Icon(
+    Icons.star_border_outlined,
+    color: Colors.white70,
+  );
+  static const Icon favouritedIcon = Icon(
+    Icons.star,
+    color: Colors.yellow,
+  );
 
   @override
   Widget build(BuildContext context) {
-    // TODO: ADD FAVOURITES BUTTON TO TOP RIGHT OF LISTTILE
-    // TODO: ADD BORDER TO EACH OF THE PDF
-    // TODO: ADD PADDING TO EACH OF THE PDF
     return ListTile(
+      visualDensity: const VisualDensity(vertical: 2),
       onTap: () async {
-        Document openedDoc = docCon.updateLastOpened(docTitle: docString);
+        Document openedDoc =
+            widget.docCon.updateLastOpened(docTitle: widget.doc.docTitle);
         Get.to(ReaderScreen(doc: openedDoc));
+        // update the homescreen
       },
       title: Text(
-        docString,
+        widget.doc.docTitle,
         style: GoogleFonts.nunito(color: Colors.white70),
         overflow: TextOverflow.ellipsis,
       ),
-      // todo: add a size attribute
-      trailing: Text(
-        docDate,
-        style: GoogleFonts.nunito(color: Colors.grey),
+      trailing: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          GestureDetector(
+            onTap: _toggleFavourite,
+            // tag the state of the favourites icon to the favourited state of
+            // the document
+            child: ValueListenableBuilder<Box<Document>>(
+              valueListenable: widget.docCon.recentFiles.listenable(),
+              builder: (context, box, _) {
+                return box.get(widget.doc.docTitle)!.favourited
+                    ? favouritedIcon
+                    : unfavouritedIcon;
+              },
+            ),
+          ),
+          Text(
+            widget.doc.docDate,
+            style: GoogleFonts.nunito(color: Colors.grey, fontSize: 16.0),
+          ),
+        ],
       ),
       leading: const Icon(
         Icons.picture_as_pdf,

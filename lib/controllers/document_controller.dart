@@ -1,6 +1,7 @@
 import 'package:file_picker/file_picker.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:intl/intl.dart';
 
 import '../models/document_model.dart';
@@ -35,12 +36,11 @@ class DocumentController extends GetxController {
       String formattedDate = DateFormat('EEEE, MMM d, yyyy').format(now);
 
       // convert the file to a document object
-      Document doc = Document(picked.name, picked.path!, formattedDate, now);
+      Document doc = Document(picked.name, picked.path!, formattedDate, now, false);
       recentFiles.put(picked.name, doc);
 
       return doc;
     } else {
-      // TODO: think about what to do if user picks nothing
       return null;
     }
   }
@@ -53,7 +53,7 @@ class DocumentController extends GetxController {
     String formattedDate = DateFormat('EEEE, MMM d, yyyy').format(now);
 
     // convert the file to a document object
-    Document doc = Document(curr.docTitle, curr.docPath, formattedDate, now);
+    Document doc = Document(curr.docTitle, curr.docPath, formattedDate, now, curr.favourited);
     recentFiles.put(doc.docTitle, doc);
 
     return doc;
