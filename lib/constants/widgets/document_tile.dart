@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'dart:io';
 
 import '../../controllers/document_controller.dart';
 import '../../models/document_model.dart';
@@ -38,12 +39,55 @@ class _DocumentTileState extends State<DocumentTile> {
     Icons.star,
     color: Colors.yellow,
   );
-
+  // access the document controller
+  DocumentController docCon = Get.find();
   @override
   Widget build(BuildContext context) {
     return ListTile(
       visualDensity: const VisualDensity(vertical: 2),
       onTap: () async {
+        // gc: file does not exist
+        if (!File(widget.doc.docPath).existsSync()) {
+          // show warning
+          showDialog(
+            context: context,
+            barrierDismissible: false,
+            builder: (BuildContext context) {
+              // refresh the recent files screen
+              docCon.refreshDocuments();
+              return AlertDialog(
+                backgroundColor: Colors.black87,
+                elevation: 24.0,
+                title: const Text(
+                  'File Not Available',
+                  style: TextStyle(
+                    color: Colors.white70,
+                  ),
+                ),
+                content: const Text(
+                  'The file you are trying to open is no longer available and cannot be opened.',
+                  style: TextStyle(
+                    color: Colors.white70,
+                  ),
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Get.back();
+                    },
+                    child: const Text(
+                      'Ok',
+                      style: TextStyle(
+                        color: Colors.white70,
+                      ),
+                    ),
+                  )
+                ],
+              );
+            },
+          );
+          return;
+        }
         Document openedDoc =
             widget.docCon.updateLastOpened(docTitle: widget.doc.docTitle);
         Get.to(ReaderScreen(doc: openedDoc));

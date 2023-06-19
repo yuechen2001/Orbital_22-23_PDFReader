@@ -43,6 +43,8 @@ class _SideBar extends StatefulWidget {
 class SideBar extends State<_SideBar> {
   @override
   Widget build(BuildContext context) {
+    // retrieve document controller. this is to refresh the recent files db
+    DocumentController docCon = Get.find();
     return // todo: make this a sized box with infinite height
         SizedBox(
       width: 200.0,
@@ -117,6 +119,8 @@ class SideBar extends State<_SideBar> {
               height: 50.0,
               child: TextButton.icon(
                 onPressed: () {
+                  // refresh the home screen
+                  docCon.refreshDocuments();
                   Get.back();
                 },
                 icon: const Icon(
