@@ -16,18 +16,6 @@ class DocumentController extends GetxController {
     recentFiles = Hive.box<Document>("recent_files");
   }
 
-  Future<PlatformFile?> pickFile() async {
-    // open the storage for user to choose 1 pdf file
-    // pickFiles parameter filters only for pdf files
-    FilePickerResult? result = await FilePicker.platform
-        .pickFiles(type: FileType.custom, allowedExtensions: ['pdf']);
-    // gc: no file is picked => terminate early
-    if (result == null) return null;
-    // get the file
-    PlatformFile file = result.files.first;
-    return file;
-  }
-
   Future<Document?> createNewDocument() async {
     // pick new file
     PlatformFile? picked = await pickFile();
@@ -36,13 +24,26 @@ class DocumentController extends GetxController {
       String formattedDate = DateFormat('EEEE, MMM d, yyyy').format(now);
 
       // convert the file to a document object
-      Document doc = Document(picked.name, picked.path!, formattedDate, now, false);
+      Document doc =
+          Document(picked.name, picked.path!, formattedDate, now, false);
       recentFiles.put(picked.name, doc);
 
       return doc;
     } else {
       return null;
     }
+  }
+
+  Future<PlatformFile?> pickFile() async {
+    // open the storage for user to choose 1 pdf file
+    // NOTE: pickFiles parameter filters only for pdf files
+    FilePickerResult? result = await FilePicker.platform
+        .pickFiles(type: FileType.custom, allowedExtensions: ['pdf']);
+    // no file is picked => terminate early
+    if (result == null) return null;
+    // else, get the file
+    PlatformFile file = result.files.first;
+    return file;
   }
 
   Document updateLastOpened({required String docTitle}) {
@@ -53,7 +54,8 @@ class DocumentController extends GetxController {
     String formattedDate = DateFormat('EEEE, MMM d, yyyy').format(now);
 
     // convert the file to a document object
-    Document doc = Document(curr.docTitle, curr.docPath, formattedDate, now, curr.favourited);
+    Document doc = Document(
+        curr.docTitle, curr.docPath, formattedDate, now, curr.favourited);
     recentFiles.put(doc.docTitle, doc);
 
     return doc;
@@ -63,7 +65,10 @@ class DocumentController extends GetxController {
     recentFiles.clear();
     update();
   }
+
+  @override
+  void dispose() {
+    Get.delete<DocumentController>();
+    super.dispose();
+  }
 }
-
-
-  // // method that clears the recent files db

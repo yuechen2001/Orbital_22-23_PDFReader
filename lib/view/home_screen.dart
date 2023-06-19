@@ -1,13 +1,12 @@
 import 'package:get/get.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:pdfreader2/models/document_model.dart';
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pdfreader2/view/reader_screen.dart';
-
 import '../constants/widgets/document_tile.dart';
 import '../controllers/document_controller.dart';
+import '../models/document_model.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -43,7 +42,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       onPressed: () {
                         // todo: add logic for toggling the buttons
                         if (Scaffold.of(context).isDrawerOpen) {
-                          // if drawer opened
+                          // if drawer opeRned
                           // close the drawer
                           Scaffold.of(context).closeDrawer();
                           // todo: change button orientation to face right
