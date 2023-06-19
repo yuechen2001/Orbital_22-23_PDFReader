@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:pdfreader2/models/document_model.dart';
 import 'package:pdfreader2/view/home_screen.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
+
+import 'models/document_model.dart';
 
 final List<Box> boxes = [];
 
@@ -17,7 +18,6 @@ Future<List<Box>> _openBox() async {
   try {
     // Retrieve directory where all application data is stored in local storage
     var dir = await getApplicationDocumentsDirectory();
-    print(dir.toString());
 
     Hive.init(dir.path);
     _registerAdapter();
@@ -28,7 +28,6 @@ Future<List<Box>> _openBox() async {
     boxes.add(recentFiles);
     return boxes;
   } catch (error) {
-    print("Error: $error");
     rethrow;
   }
 }
