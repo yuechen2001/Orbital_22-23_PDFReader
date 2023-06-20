@@ -19,10 +19,21 @@ class _HomeScreenState extends State<HomeScreen> {
   final DocumentController docCon = Get.put(DocumentController());
 
   @override
+  void dispose() {
+    docCon.dispose();
+    super.dispose();
+  }
+
+  @override
+  void initState() {
+    docCon.removeMissingDocuments();
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     // every time the home screen is rebuilt, check if any of the files
     // in the recent files list has been deleted. if true, update the db
-    docCon.refreshDocuments();
     return Scaffold(
       body: Row(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -117,7 +128,6 @@ class _HomeScreenState extends State<HomeScreen> {
                           itemBuilder: (context, index) {
                             Document doc = sorted[index];
                             return DocumentTile(
-                              docCon: docCon,
                               doc: doc,
                             );
                           },

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
-import '../../pdfviewer.dart';
+import '../pdf_viewer_library.dart';
 import '../common/pdfviewer_helper.dart';
 
 /// Height of the ScrollHead.

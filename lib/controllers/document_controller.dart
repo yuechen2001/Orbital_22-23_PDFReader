@@ -70,7 +70,7 @@ class DocumentController extends GetxController {
 
   // method that will loop over all the files in the db, deleting any files
   // that no longer exist
-  void refreshDocuments() {
+  void removeMissingDocuments() {
     // convert the recentFiles to an iterable
     Iterable<MapEntry<dynamic, Document>> filesIter =
         recentFiles.toMap().entries;
@@ -83,9 +83,9 @@ class DocumentController extends GetxController {
     }
   }
 
-  // @override
-  // void dispose() {
-  //   Get.delete<DocumentController>();
-  //   super.dispose();
-  // }
+  @override
+  void dispose() {
+    Get.delete<DocumentController>();
+    super.dispose();
+  }
 }

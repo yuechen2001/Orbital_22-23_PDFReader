@@ -1,7 +1,7 @@
 import 'package:get/get.dart';
 
 class ReaderController extends GetxController {
-  var backgroundColour = "White".obs;
+  RxString backgroundColour = "White".obs;
 
   void updateBackgroundcolour(String selectedValue) {
     backgroundColour.value = selectedValue;

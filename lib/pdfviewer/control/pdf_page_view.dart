@@ -4,7 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:pdfreader2/controllers/reader_controller.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:syncfusion_flutter_pdf/pdf.dart';
-import '../../pdfviewer.dart';
+import '../pdf_viewer_library.dart';
 import '../common/mobile_helper.dart'
     if (dart.library.html) 'package:syncfusion_flutter_pdfviewer/src/common/web_helper.dart'
     as helper;
