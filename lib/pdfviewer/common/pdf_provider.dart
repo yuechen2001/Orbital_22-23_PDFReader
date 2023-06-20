@@ -5,7 +5,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
-import '../../pdfviewer.dart';
+import '../pdf_viewer_library.dart';
 
 /// Represents a base class of PDF document provider.
 /// The PDF provider can be from Asset, Memory, File and Network.

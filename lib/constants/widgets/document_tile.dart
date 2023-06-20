@@ -10,10 +10,8 @@ import '../../models/document_model.dart';
 import '../../view/reader_screen.dart';
 
 class DocumentTile extends StatefulWidget {
-  const DocumentTile({super.key, required this.docCon, required this.doc});
+  const DocumentTile({super.key, required this.doc});
 
-  // document parameters
-  final DocumentController docCon;
   final Document doc;
 
   @override
@@ -21,6 +19,7 @@ class DocumentTile extends StatefulWidget {
 }
 
 class _DocumentTileState extends State<DocumentTile> {
+  DocumentController docCon = Get.find<DocumentController>();
   // constants for favourite icon of the document tile
   static Icon unfavouritedIcon = const Icon(
     Icons.star,
@@ -32,13 +31,6 @@ class _DocumentTileState extends State<DocumentTile> {
     color: Colors.white70,
   );
 
-  // function to dispose the document controller once not needed
-  @override
-  void dispose() {
-    widget.docCon.dispose();
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
     return ListTile(
@@ -48,50 +40,44 @@ class _DocumentTileState extends State<DocumentTile> {
         if (!File(widget.doc.docPath).existsSync()) {
           // show warning
           showDialog(
-            context: context,
-            barrierDismissible: false,
-            builder: (BuildContext context) {
-              // refresh the recent files screen
-              widget.docCon.refreshDocuments();
-              // dispose the docCon since not needed
-              return AlertDialog(
-                backgroundColor: Colors.black87,
-                elevation: 24.0,
-                title: const Text(
-                  'File Not Available',
-                  style: TextStyle(
-                    color: Colors.white70,
-                  ),
-                ),
-                content: const Text(
-                  'The file you are trying to open is no longer available and cannot be opened.',
-                  style: TextStyle(
-                    color: Colors.white70,
-                  ),
-                ),
-                actions: [
-                  TextButton(
-                    onPressed: () {
-                      Get.back();
-                    },
-                    child: const Text(
-                      'Ok',
+              context: context,
+              barrierDismissible: false,
+              builder: (BuildContext context) => AlertDialog(
+                    backgroundColor: Colors.black87,
+                    elevation: 24.0,
+                    title: const Text(
+                      'File Not Available',
                       style: TextStyle(
                         color: Colors.white70,
                       ),
                     ),
-                  )
-                ],
-              );
-            },
-          );
-          return;
+                    content: const Text(
+                      'The file you are trying to open is no longer available and cannot be opened.',
+                      style: TextStyle(
+                        color: Colors.white70,
+                      ),
+                    ),
+                    actions: [
+                      TextButton(
+                        onPressed: () {
+                          docCon.removeMissingDocuments();
+                          Get.back();
+                        },
+                        child: const Text(
+                          'Ok',
+                          style: TextStyle(
+                            color: Colors.white70,
+                          ),
+                        ),
+                      )
+                    ],
+                  ));
+        } else {
+          // case where the document exists in the user's local filesystem
+          Document openedDoc =
+              docCon.updateLastOpened(docTitle: widget.doc.docTitle);
+          Get.to(ReaderScreen(doc: openedDoc));
         }
-        // case where the document exists in the user's local filesystem
-        Document openedDoc =
-            widget.docCon.updateLastOpened(docTitle: widget.doc.docTitle);
-        Get.to(ReaderScreen(doc: openedDoc));
-        // update the homescreen
       },
       title: Text(
         widget.doc.docTitle,
@@ -110,7 +96,7 @@ class _DocumentTileState extends State<DocumentTile> {
               favCon.dispose();
             },
             child: ValueListenableBuilder<Box<Document>>(
-              valueListenable: widget.docCon.recentFiles.listenable(),
+              valueListenable: docCon.recentFiles.listenable(),
               builder: (context, box, _) {
                 return box.get(widget.doc.docTitle)!.favourited
                     ? favouritedIcon

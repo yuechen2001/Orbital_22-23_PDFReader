@@ -6,7 +6,7 @@ import 'dart:ui';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
-import '../../pdfviewer.dart';
+import '../pdf_viewer_library.dart';
 import '../common/pdfviewer_helper.dart';
 import 'pdf_page_view.dart';
 import 'scroll_head_overlay.dart';

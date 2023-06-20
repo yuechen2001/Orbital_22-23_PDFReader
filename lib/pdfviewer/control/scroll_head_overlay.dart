@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_core/interactive_scroll_viewer_internal.dart';
 import 'package:syncfusion_flutter_core/localizations.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
-import '../../pdfviewer.dart';
+import '../pdf_viewer_library.dart';
 import '../common/pdfviewer_helper.dart';
 import 'pdf_page_view.dart';
 import 'pdf_scrollable.dart';

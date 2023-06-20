@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_core/localizations.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:syncfusion_flutter_pdf/pdf.dart';
-import '../../pdfviewer.dart';
+import '../pdf_viewer_library.dart';
 import '../common/pdfviewer_helper.dart';
 
 import 'bookmark_item.dart';
