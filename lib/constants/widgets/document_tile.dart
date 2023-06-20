@@ -109,8 +109,6 @@ class _DocumentTileState extends State<DocumentTile> {
               favCon.toggleFavourite();
               favCon.dispose();
             },
-            // tag the state of the favourites icon to the favourited state of
-            // the document
             child: ValueListenableBuilder<Box<Document>>(
               valueListenable: widget.docCon.recentFiles.listenable(),
               builder: (context, box, _) {

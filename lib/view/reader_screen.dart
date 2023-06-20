@@ -10,7 +10,6 @@ import 'package:pdfreader2/controllers/document_controller.dart';
 import 'package:pdfreader2/controllers/favourite_controller.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 
-// ignore: must_be_immutable
 class ReaderScreen extends StatefulWidget {
   const ReaderScreen({Key? key, required this.doc}) : super(key: key);
   final Document doc;
@@ -203,6 +202,12 @@ class TopMenuBar extends State<_TopMenuBar> {
   }
 
   @override
+  void dispose() {
+    favCon.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Container(
       height: 50.0,
@@ -318,7 +323,7 @@ class TopMenuBar extends State<_TopMenuBar> {
               onPressed: () {
                 favCon.toggleFavourite();
               },
-              icon: ValueListenableBuilder(
+              icon: ValueListenableBuilder<Box<Document>>(
                 valueListenable: docCon.recentFiles.listenable(),
                 builder: (context, box, _) {
                   return box.get(widget.doc.docTitle)!.favourited
