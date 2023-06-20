@@ -83,9 +83,9 @@ class DocumentController extends GetxController {
     }
   }
 
-  @override
-  void dispose() {
-    Get.delete<DocumentController>();
-    super.dispose();
-  }
+  // @override
+  // void dispose() {
+  //   Get.delete<DocumentController>();
+  //   super.dispose();
+  // }
 }
