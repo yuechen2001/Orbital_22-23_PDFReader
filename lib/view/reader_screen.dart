@@ -77,7 +77,10 @@ class SideBar extends State<_SideBar> {
               width: 200.0,
               height: 50.0,
               child: TextButton.icon(
-                onPressed: () {},
+                onPressed: () {
+                  TopMenuBar._pdfViewerController.zoomLevel =
+                      TopMenuBar._pdfViewerController.zoomLevel + 0.5;
+                },
                 icon: const Icon(
                   Icons.zoom_in,
                   color: Colors.white70,
@@ -92,7 +95,10 @@ class SideBar extends State<_SideBar> {
               width: 200.0,
               height: 50.0,
               child: TextButton.icon(
-                onPressed: () {},
+                onPressed: () {
+                  TopMenuBar._pdfViewerController.zoomLevel =
+                      TopMenuBar._pdfViewerController.zoomLevel - 0.5;
+                },
                 icon: const Icon(
                   Icons.zoom_out,
                   color: Colors.white70,
@@ -152,6 +158,8 @@ class _TopMenuBar extends StatefulWidget {
 class TopMenuBar extends State<_TopMenuBar> {
   // retrieve the document controller using Get
   DocumentController docCon = Get.find();
+  // pdf controller for the PDF viewer screen
+  static PdfViewerController _pdfViewerController = PdfViewerController();
 
   @override
   Widget build(BuildContext context) {
@@ -265,7 +273,12 @@ class TopMenuBar extends State<_TopMenuBar> {
             ),
           ),
           // add the pdf viewer screen
-          Expanded(child: SfPdfViewer.file(File(widget.doc.docPath)))
+          Expanded(
+            child: SfPdfViewer.file(
+              File(widget.doc.docPath),
+              controller: _pdfViewerController,
+            ),
+          )
         ],
       ),
     );
