@@ -2,12 +2,13 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:pdfreader2/controllers/favourite_controller.dart';
 import 'package:pdfreader2/controllers/reader_controller.dart';
 import 'package:pdfreader2/models/document_model.dart';
-import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
+import 'package:pdfreader2/pdfviewer.dart';
 import 'package:get/get.dart';
 import 'package:pdfreader2/controllers/document_controller.dart';
+import 'package:pdfreader2/controllers/favourite_controller.dart';
+import 'package:dropdown_button2/dropdown_button2.dart';
 
 class ReaderScreen extends StatefulWidget {
   const ReaderScreen({Key? key, required this.doc}) : super(key: key);
@@ -22,7 +23,7 @@ class _ReaderScreenState extends State<ReaderScreen> {
 
   @override
   void dispose() {
-    // dispose reader controller when not in use
+    // dispose the reader controller
     readCon.dispose();
     super.dispose();
   }
@@ -40,10 +41,14 @@ class _ReaderScreenState extends State<ReaderScreen> {
                 // component 2: the edit menu
                 _TopMenuBar(doc: widget.doc),
                 // component 3: the PDF view screen
-                Flexible(child: SfPdfViewer.file(File(widget.doc.docPath)))
+                Flexible(
+                  child: SfPdfViewer.file(
+                    File(widget.doc.docPath),
+                  ),
+                )
               ],
             ),
-          )
+          ),
         ],
       ),
     );
@@ -57,6 +62,9 @@ class _SideBar extends StatefulWidget {
 }
 
 class SideBar extends State<_SideBar> {
+  // retrieve the document controller to refresh the db
+  DocumentController docCon = Get.find<DocumentController>();
+
   @override
   Widget build(BuildContext context) {
     return // todo: make this a sized box with infinite height
@@ -119,11 +127,13 @@ class SideBar extends State<_SideBar> {
             width: 200.0,
             height: 50.0,
             child: TextButton.icon(
-                onPressed: () {},
-                icon:
-                    const Icon(Icons.desktop_mac_sharp, color: Colors.white70),
-                label: const Text("Save As",
-                    style: TextStyle(color: Colors.white70))),
+              onPressed: () {},
+              icon: const Icon(Icons.desktop_mac_sharp, color: Colors.white70),
+              label: const Text(
+                "Save As",
+                style: TextStyle(color: Colors.white70),
+              ),
+            ),
           ),
           const Spacer(),
           SizedBox(
@@ -131,6 +141,8 @@ class SideBar extends State<_SideBar> {
             height: 50.0,
             child: TextButton.icon(
               onPressed: () {
+                // refresh the home screen
+                docCon.refreshDocuments();
                 Get.back();
               },
               icon: const Icon(
@@ -159,14 +171,29 @@ class _TopMenuBar extends StatefulWidget {
 }
 
 class TopMenuBar extends State<_TopMenuBar> {
+  // retrieve the document controller using Get
   DocumentController docCon = Get.find<DocumentController>();
   late FavouriteController favCon;
+  ReaderController readCon = Get.find<ReaderController>();
 
-  // constants for favourite icon of the document tile
-  static Icon unfavouritedIcon = const Icon(Icons.star, color: Colors.yellow);
+  // constants for favourites icon of the document tile
+  static Icon unFavouritedIcon = const Icon(
+    Icons.star,
+    color: Colors.yellow,
+  );
 
-  static Icon favouritedIcon =
-      const Icon(Icons.star_border_outlined, color: Colors.white70);
+  static Icon favouritedIcon = const Icon(
+    Icons.star_border_outlined,
+    color: Colors.white70,
+  );
+
+  // items list to populate background colours menu
+  List<String> backgroundColourOptions = [
+    "White",
+    "Dark",
+    "Sepia",
+  ];
+  String selectedValue = "White";
 
   @override
   void initState() {
@@ -207,15 +234,52 @@ class TopMenuBar extends State<_TopMenuBar> {
               ),
             ),
             // background colour
-            TextButton.icon(
-              onPressed: () {},
-              icon: const Icon(
-                Icons.contrast,
-                color: Colors.white70,
-              ),
-              label: const Text(
-                "Background Colour",
-                style: TextStyle(color: Colors.white70),
+            DropdownButtonHideUnderline(
+              child: Theme(
+                data: Theme.of(context).copyWith(
+                  focusColor: Colors.transparent,
+                  highlightColor: Colors.transparent,
+                  splashColor: Colors.transparent,
+                ),
+                child: DropdownButton2(
+                  alignment: AlignmentDirectional.center,
+                  value: selectedValue,
+                  // isExpanded: true,
+                  hint: const Text(
+                    "Background Colour",
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      color: Colors.white70,
+                    ),
+                  ),
+                  items: backgroundColourOptions.map(
+                    (option) {
+                      return DropdownMenuItem<String>(
+                        value: option,
+                        alignment: AlignmentDirectional.center,
+                        child: Text(
+                          option,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                              color: Colors.white70,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 13.0),
+                        ),
+                      );
+                    },
+                  ).toList(),
+                  iconStyleData: const IconStyleData(iconSize: 0),
+                  dropdownStyleData: const DropdownStyleData(
+                    decoration: BoxDecoration(color: Colors.black87),
+                  ),
+                  onChanged: (value) {
+                    setState(() {
+                      selectedValue = value!;
+                    });
+                    // update the readCon selectedValue field
+                    readCon.updateBackgroundcolour(selectedValue);
+                  },
+                ),
               ),
             ),
             // text size
@@ -254,6 +318,7 @@ class TopMenuBar extends State<_TopMenuBar> {
                 style: TextStyle(color: Colors.white70),
               ),
             ),
+            // favourite
             TextButton.icon(
               onPressed: () {
                 favCon.toggleFavourite();
@@ -263,7 +328,7 @@ class TopMenuBar extends State<_TopMenuBar> {
                 builder: (context, box, _) {
                   return box.get(widget.doc.docTitle)!.favourited
                       ? favouritedIcon
-                      : unfavouritedIcon;
+                      : unFavouritedIcon;
                 },
               ),
               label: const Text(

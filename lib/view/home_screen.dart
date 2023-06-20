@@ -20,6 +20,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // every time the home screen is rebuilt, check if any of the files
+    // in the recent files list has been deleted. if true, update the db
+    docCon.refreshDocuments();
     return Scaffold(
       body: Row(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -30,11 +33,12 @@ class _HomeScreenState extends State<HomeScreen> {
             width: 20.0,
             height: double.infinity,
             child: Container(
-                decoration: BoxDecoration(
-                    color: Colors.black87.withOpacity(1.0),
-                    border: const BorderDirectional(
-                        end: BorderSide(color: Colors.white10))),
-                child: Builder(builder: (BuildContext context) {
+              decoration: BoxDecoration(
+                  color: Colors.black87.withOpacity(1.0),
+                  border: const BorderDirectional(
+                      end: BorderSide(color: Colors.white10))),
+              child: Builder(
+                builder: (BuildContext context) {
                   return IconButton(
                       icon: const Icon(Icons.arrow_right),
                       padding: EdgeInsets.zero,
@@ -52,7 +56,9 @@ class _HomeScreenState extends State<HomeScreen> {
                           // todo: change button orientation to face left
                         }
                       });
-                })),
+                },
+              ),
+            ),
           ),
           // component 2: the recent files screen to choose recent files
           Expanded(
