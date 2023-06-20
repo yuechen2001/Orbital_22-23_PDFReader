@@ -20,6 +20,9 @@ dependencies:
   path_provider: ^2.0.15
   hive_generator: ^2.0.0
   hive_flutter: ^1.1.0
+  dropdown_button2: ^2.1.4
+  syncfusion_flutter_pdf: ^21.2.10
+  syncfusion_flutter_core: ^21.2.10
 
 dev_dependencies:
   flutter_test:

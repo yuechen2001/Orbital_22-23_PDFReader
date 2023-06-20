@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'dart:io';
+import 'package:pdfreader2/controllers/favourite_controller.dart';
 
 import '../../controllers/document_controller.dart';
 import '../../models/document_model.dart';
@@ -20,27 +21,24 @@ class DocumentTile extends StatefulWidget {
 }
 
 class _DocumentTileState extends State<DocumentTile> {
-  // function to toggle the favourite status of the document
-  void _toggleFavourite() {
-    if (widget.doc.favourited) {
-      widget.doc.favourited = false;
-    } else {
-      widget.doc.favourited = true;
-    }
-    widget.docCon.recentFiles.put(widget.doc.docTitle, widget.doc);
-  }
-
   // constants for favourite icon of the document tile
-  static const Icon unfavouritedIcon = Icon(
-    Icons.star_border_outlined,
-    color: Colors.white70,
-  );
-  static const Icon favouritedIcon = Icon(
+  static Icon unfavouritedIcon = const Icon(
     Icons.star,
     color: Colors.yellow,
   );
-  // access the document controller
-  DocumentController docCon = Get.find();
+
+  static Icon favouritedIcon = const Icon(
+    Icons.star_border_outlined,
+    color: Colors.white70,
+  );
+
+  // function to dispose the document controller once not needed
+  @override
+  void dispose() {
+    widget.docCon.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return ListTile(
@@ -54,7 +52,8 @@ class _DocumentTileState extends State<DocumentTile> {
             barrierDismissible: false,
             builder: (BuildContext context) {
               // refresh the recent files screen
-              docCon.refreshDocuments();
+              widget.docCon.refreshDocuments();
+              // dispose the docCon since not needed
               return AlertDialog(
                 backgroundColor: Colors.black87,
                 elevation: 24.0,
@@ -88,6 +87,7 @@ class _DocumentTileState extends State<DocumentTile> {
           );
           return;
         }
+        // case where the document exists in the user's local filesystem
         Document openedDoc =
             widget.docCon.updateLastOpened(docTitle: widget.doc.docTitle);
         Get.to(ReaderScreen(doc: openedDoc));
@@ -103,7 +103,12 @@ class _DocumentTileState extends State<DocumentTile> {
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           GestureDetector(
-            onTap: _toggleFavourite,
+            onTap: () {
+              FavouriteController favCon =
+                  Get.put(FavouriteController(doc: widget.doc));
+              favCon.toggleFavourite();
+              favCon.dispose();
+            },
             // tag the state of the favourites icon to the favourited state of
             // the document
             child: ValueListenableBuilder<Box<Document>>(
