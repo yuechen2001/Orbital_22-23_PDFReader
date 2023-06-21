@@ -8,7 +8,6 @@ import 'package:pdfreader2/pdfviewer/pdf_viewer_library.dart';
 import 'package:get/get.dart';
 import 'package:pdfreader2/controllers/document_controller.dart';
 import 'package:pdfreader2/controllers/favourite_controller.dart';
-import 'package:dropdown_button2/dropdown_button2.dart';
 
 class ReaderScreen extends StatefulWidget {
   const ReaderScreen({Key? key, required this.doc}) : super(key: key);
@@ -67,8 +66,7 @@ class SideBar extends State<_SideBar> {
 
   @override
   Widget build(BuildContext context) {
-    return // todo: make this a sized box with infinite height
-        Container(
+    return Container(
       width: 150.0,
       height: double.infinity,
       color: Colors.black87,
@@ -89,36 +87,6 @@ class SideBar extends State<_SideBar> {
               ),
               label: const Text(
                 "Save",
-                style: TextStyle(color: Colors.white70),
-              ),
-            ),
-          ),
-          SizedBox(
-            width: 200.0,
-            height: 50.0,
-            child: TextButton.icon(
-              onPressed: () {},
-              icon: const Icon(
-                Icons.zoom_in,
-                color: Colors.white70,
-              ),
-              label: const Text(
-                "Zoom in",
-                style: TextStyle(color: Colors.white70),
-              ),
-            ),
-          ),
-          SizedBox(
-            width: 200.0,
-            height: 50.0,
-            child: TextButton.icon(
-              onPressed: () {},
-              icon: const Icon(
-                Icons.zoom_out,
-                color: Colors.white70,
-              ),
-              label: const Text(
-                "Zoom out",
                 style: TextStyle(color: Colors.white70),
               ),
             ),
@@ -229,41 +197,63 @@ class TopMenuBar extends State<_TopMenuBar> {
                 style: TextStyle(color: Colors.white70),
               ),
             ),
-            // background colour
-            DropdownButtonHideUnderline(
-              child: DropdownButton2(
-                alignment: AlignmentDirectional.center,
-                value: backgroundColourOptions[0],
-                hint: const Text(
-                  "Background Colour",
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
+            PopupMenuButton<String>(
+              initialValue: backgroundColourOptions[0],
+              onSelected: (value) {
+                readCon.updateBackgroundcolour(value);
+              },
+              color: Colors.black87,
+              itemBuilder: (BuildContext context) {
+                return backgroundColourOptions.map((option) {
+                  return PopupMenuItem<String>(
+                    onTap: () {
+                      readCon.updateBackgroundcolour(option);
+                    },
+                    child: SizedBox(
+                      width: context.width,
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            option,
+                            style: const TextStyle(
+                                color: Colors.white70,
+                                fontSize: 14.0,
+                                fontWeight: FontWeight.w600),
+                          ),
+                          Icon(
+                            Icons.check,
+                            color: Colors.blue,
+                            size: readCon.backgroundColour.value != option
+                              ? 0.0
+                              : 20.0,
+                          ),
+                        ]
+                      ),
+                    ),
+                  );
+                }).toList();
+              },
+              offset: const Offset(0, 42),
+              child: const Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Icon(
+                    Icons.contrast,
                     color: Colors.white70,
                   ),
-                ),
-                items: backgroundColourOptions
-                    .map(
-                      (option) => DropdownMenuItem<String>(
-                        value: option,
-                        alignment: AlignmentDirectional.center,
-                        child: Text(
-                          option,
-                          overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
-                              color: Colors.white70,
-                              fontWeight: FontWeight.w600),
-                        ),
-                      ),
-                    )
-                    .toList(),
-                iconStyleData: const IconStyleData(iconSize: 0),
-                dropdownStyleData: const DropdownStyleData(
-                  decoration: BoxDecoration(color: Colors.black87),
-                ),
-                onChanged: (selectedValue) => {
-                  if (selectedValue != null)
-                    {readCon.updateBackgroundcolour(selectedValue)}
-                },
+                  SizedBox(
+                    height: 50.0,
+                    width: 10.0,
+                  ),
+                  Text(
+                    "Background Colour",
+                    style: TextStyle(
+                        color: Colors.white70, fontWeight: FontWeight.w600),
+                  ),
+                ],
               ),
             ),
             // text size
