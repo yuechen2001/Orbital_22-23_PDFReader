@@ -99,8 +99,8 @@ class _DocumentTileState extends State<DocumentTile> {
               valueListenable: docCon.recentFiles.listenable(),
               builder: (context, box, _) {
                 return box.get(widget.doc.docTitle)!.favourited
-                    ? favouritedIcon
-                    : unfavouritedIcon;
+                    ? unfavouritedIcon
+                    : favouritedIcon;
               },
             ),
           ),
