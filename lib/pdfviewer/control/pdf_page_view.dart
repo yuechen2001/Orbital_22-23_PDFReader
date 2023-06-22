@@ -436,7 +436,7 @@ class PdfPageViewState extends State<PdfPageView> {
                       if (event is RawKeyDownEvent) {
                         double zoomLevel = widget.pdfViewerController.zoomLevel;
                         if (zoomLevel > 1) {
-                          zoomLevel = zoomLevel - 0.5;
+                          zoomLevel = zoomLevel - 0.25;
                         }
                         widget.pdfViewerController.zoomLevel = zoomLevel;
                       }
@@ -445,7 +445,7 @@ class PdfPageViewState extends State<PdfPageView> {
                         event.logicalKey == LogicalKeyboardKey.equal) {
                       if (event is RawKeyDownEvent) {
                         double zoomLevel = widget.pdfViewerController.zoomLevel;
-                        zoomLevel = zoomLevel + 0.5;
+                        zoomLevel = zoomLevel + 0.25;
                         widget.pdfViewerController.zoomLevel = zoomLevel;
                       }
                     }
@@ -555,11 +555,14 @@ class PdfPageViewState extends State<PdfPageView> {
                         },
                         child: canvasContainer)
                     : canvasContainer,
-              ));
-      return Stack(children: <Widget>[
-        pdfPage,
-        canvas,
-      ]);
+              ),
+            );
+      return Stack(
+        children: <Widget>[
+          pdfPage,
+          canvas,
+        ],
+      );
     } else {
       final BorderSide borderSide = BorderSide(
           width: widget.isSinglePageView ? pageSpacing / 2 : pageSpacing,

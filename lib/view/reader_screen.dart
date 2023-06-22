@@ -8,6 +8,7 @@ import 'package:pdfreader2/pdfviewer/pdf_viewer_library.dart';
 import 'package:get/get.dart';
 import 'package:pdfreader2/controllers/document_controller.dart';
 import 'package:pdfreader2/controllers/favourite_controller.dart';
+import 'package:syncfusion_flutter_core/theme.dart';
 
 class ReaderScreen extends StatefulWidget {
   const ReaderScreen({Key? key, required this.doc}) : super(key: key);
@@ -27,6 +28,11 @@ class _ReaderScreenState extends State<ReaderScreen> {
     super.dispose();
   }
 
+  // method to compute the initial zoom level
+  double computeZoomLevel(BuildContext context) {
+    return MediaQuery.of(context).size.width / 670;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -43,6 +49,12 @@ class _ReaderScreenState extends State<ReaderScreen> {
                 Flexible(
                   child: SfPdfViewer.file(
                     File(widget.doc.docPath),
+                    maxZoomLevel: double.infinity,
+                    initialZoomLevel: computeZoomLevel(context),
+                    // onZoomLevelChanged: (details) {
+                    //   print(MediaQuery.of(context).size.width);
+                    //   print(details.newZoomLevel);
+                    // },
                   ),
                 )
               ],
@@ -212,25 +224,24 @@ class TopMenuBar extends State<_TopMenuBar> {
                     child: SizedBox(
                       width: context.width,
                       child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            option,
-                            style: const TextStyle(
-                                color: Colors.white70,
-                                fontSize: 14.0,
-                                fontWeight: FontWeight.w600),
-                          ),
-                          Icon(
-                            Icons.check,
-                            color: Colors.blue,
-                            size: readCon.backgroundColour.value != option
-                              ? 0.0
-                              : 20.0,
-                          ),
-                        ]
-                      ),
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              option,
+                              style: const TextStyle(
+                                  color: Colors.white70,
+                                  fontSize: 14.0,
+                                  fontWeight: FontWeight.w600),
+                            ),
+                            Icon(
+                              Icons.check,
+                              color: Colors.blue,
+                              size: readCon.backgroundColour.value != option
+                                  ? 0.0
+                                  : 20.0,
+                            ),
+                          ]),
                     ),
                   );
                 }).toList();
