@@ -174,7 +174,7 @@ class TopMenuBar extends State<_TopMenuBar> {
   late FavouriteController favCon;
 
   // constants for favourites icon of the document tile
-  static Icon unFavouritedIcon = const Icon(
+  static Icon unfavouritedIcon = const Icon(
     Icons.star,
     color: Colors.yellow,
   );
@@ -311,8 +311,8 @@ class TopMenuBar extends State<_TopMenuBar> {
                 valueListenable: docCon.recentFiles.listenable(),
                 builder: (context, box, _) {
                   return box.get(widget.doc.docTitle)!.favourited
-                      ? favouritedIcon
-                      : unFavouritedIcon;
+                      ? unfavouritedIcon
+                      : favouritedIcon;
                 },
               ),
               label: const Text(

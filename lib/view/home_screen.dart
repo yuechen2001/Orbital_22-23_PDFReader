@@ -3,6 +3,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:pdfreader2/view/favourites_screen.dart';
 import 'package:pdfreader2/view/reader_screen.dart';
 import '../constants/widgets/document_tile.dart';
 import '../controllers/document_controller.dart';
@@ -96,20 +97,15 @@ class _HomeScreenState extends State<HomeScreen> {
                                 color: Colors.white70))
                       ],
                     ),
-                    DecoratedBox(
-                      decoration: const BoxDecoration(
-                          border: BorderDirectional(
-                              bottom: BorderSide(color: Colors.white10))),
-                      child: Container(
-                        padding:
-                            const EdgeInsets.fromLTRB(0.0, 15.0, 0.0, 20.0),
-                        child: Text("Recent Files",
-                            style: GoogleFonts.roboto(
-                                fontSize: 20.0,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white70)),
-                      ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(0.0, 12.0, 0.0, 12.0),
+                      child: Text("Recent Files",
+                          style: GoogleFonts.roboto(
+                              fontSize: 20.0,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white70)),
                     ),
+                    const Divider(color: Colors.white),
                     ValueListenableBuilder<Box<Document>>(
                       valueListenable: docCon.recentFiles.listenable(),
                       builder: (context, box, _) {
@@ -163,15 +159,17 @@ class _HomeScreenState extends State<HomeScreen> {
             ListTile(
               title:
                   const Text('Home', style: TextStyle(color: Colors.white70)),
-              // todo: add logic for changing pages
-              onTap: () {
-                Get.back();
-              },
+              onTap: () {},
             ),
             ListTile(
-              title:
-                  const Text('Files', style: TextStyle(color: Colors.white70)),
-              // todo: add logic for changing pages
+                title: const Text('Favourites',
+                    style: TextStyle(color: Colors.white70)),
+                onTap: () {
+                  Get.to(const FavouritesScreen());
+                }),
+            ListTile(
+              title: const Text('Upload File',
+                  style: TextStyle(color: Colors.white70)),
               onTap: () async {
                 // parse the String
                 Document? doc = await docCon.createNewDocument();
@@ -180,18 +178,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 }
               },
             ),
-            ListTile(
-                title: const Text('Favourites',
-                    style: TextStyle(color: Colors.white70)),
-                // todo: add logic for changing pages
-                onTap: () {}),
-            ListTile(
-                title: const Text('Settings',
-                    style: TextStyle(color: Colors.white70)),
-                // todo: add logic for changing pages
-                onTap: () {
-                  Get.back();
-                })
           ],
         ),
       ),

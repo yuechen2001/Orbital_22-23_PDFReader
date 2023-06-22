@@ -13,8 +13,8 @@ class FavouriteController extends GetxController {
   void toggleFavourite() {
     DocumentController docCon = Get.find<DocumentController>();
     doc.favourited = !doc.favourited;
-    update();
     docCon.recentFiles.put(doc.docTitle, doc);
+    update();
   }
 
   @override
