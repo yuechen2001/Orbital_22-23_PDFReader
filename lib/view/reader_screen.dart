@@ -37,8 +37,6 @@ class _ReaderScreenState extends State<ReaderScreen> {
     return Scaffold(
       body: Row(
         children: [
-          // component 1: the side menu
-          // const _SideBar(),
           Expanded(
             child: Column(
               children: [
@@ -197,6 +195,7 @@ class TopMenuBar extends State<_TopMenuBar> {
           children: [
             TextButton.icon(
               onPressed: () {
+                docCon.removeMissingDocuments();
                 Get.back();
               },
               icon: Transform.flip(
