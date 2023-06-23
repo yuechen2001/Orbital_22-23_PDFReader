@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:pdfreader2/view/favourites_screen.dart';
 import 'package:pdfreader2/view/home_screen.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
+import 'package:window_manager/window_manager.dart';
 
 import 'models/document_model.dart';
 
@@ -33,8 +35,23 @@ Future<List<Box>> _openBox() async {
 }
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
   await _openBox();
+  WidgetsFlutterBinding.ensureInitialized();
+  // Must add this line.
+  await windowManager.ensureInitialized();
+
+  WindowOptions windowOptions = const WindowOptions(
+    minimumSize: Size(1200, 750),
+    windowButtonVisibility: true,
+    fullScreen: false,
+    center: true,
+    backgroundColor: Colors.transparent,
+    skipTaskbar: false,
+  );
+  windowManager.waitUntilReadyToShow(windowOptions, () async {
+    await windowManager.show();
+    await windowManager.focus();
+  });
   runApp(const MyApp());
 }
 
@@ -43,6 +60,20 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const GetMaterialApp(home: HomeScreen());
+    return GetMaterialApp(
+      initialRoute: '/',
+      getPages: [
+        GetPage(
+          name: '/',
+          page: () => const HomeScreen(),
+          transition: Transition.cupertino
+        ),
+        GetPage(
+          name: '/favourites',
+          page: () => const FavouritesScreen(),
+          transition: Transition.cupertino,
+        ),
+      ],
+    );
   }
 }

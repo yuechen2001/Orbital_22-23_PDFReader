@@ -2,8 +2,6 @@ import 'package:get/get.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:pdfreader2/view/favourites_screen.dart';
 import 'package:pdfreader2/view/reader_screen.dart';
 import '../constants/widgets/document_tile.dart';
 import '../controllers/document_controller.dart';
@@ -52,22 +50,23 @@ class _HomeScreenState extends State<HomeScreen> {
               child: Builder(
                 builder: (BuildContext context) {
                   return IconButton(
-                      icon: const Icon(Icons.arrow_right),
-                      padding: EdgeInsets.zero,
-                      color: Colors.white70,
-                      onPressed: () {
-                        // todo: add logic for toggling the buttons
-                        if (Scaffold.of(context).isDrawerOpen) {
-                          // if drawer opeRned
-                          // close the drawer
-                          Scaffold.of(context).closeDrawer();
-                          // todo: change button orientation to face right
-                        } else {
-                          // if drawer closed
-                          Scaffold.of(context).openDrawer();
-                          // todo: change button orientation to face left
-                        }
-                      });
+                    icon: const Icon(Icons.arrow_right),
+                    padding: EdgeInsets.zero,
+                    color: Colors.white70,
+                    onPressed: () {
+                      // todo: add logic for toggling the buttons
+                      if (Scaffold.of(context).isDrawerOpen) {
+                        // if drawer opeRned
+                        // close the drawer
+                        Scaffold.of(context).closeDrawer();
+                        // todo: change button orientation to face right
+                      } else {
+                        // if drawer closed
+                        Scaffold.of(context).openDrawer();
+                        // todo: change button orientation to face left
+                      }
+                    },
+                  );
                 },
               ),
             ),
@@ -83,24 +82,24 @@ class _HomeScreenState extends State<HomeScreen> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    Column(
+                    const Column(
                       children: [
                         Text("Welcome",
-                            style: GoogleFonts.roboto(
+                            style: TextStyle(
                                 fontSize: 40.0,
                                 fontWeight: FontWeight.bold,
                                 color: Colors.white70)),
                         Text("How can I help you today?",
-                            style: GoogleFonts.roboto(
+                            style: TextStyle(
                                 fontSize: 30.0,
                                 fontWeight: FontWeight.bold,
                                 color: Colors.white70))
                       ],
                     ),
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(0.0, 12.0, 0.0, 12.0),
+                    const Padding(
+                      padding: EdgeInsets.fromLTRB(0.0, 12.0, 0.0, 12.0),
                       child: Text("Recent Files",
-                          style: GoogleFonts.roboto(
+                          style: TextStyle(
                               fontSize: 20.0,
                               fontWeight: FontWeight.bold,
                               color: Colors.white70)),
@@ -147,35 +146,76 @@ class _HomeScreenState extends State<HomeScreen> {
           // remove any padding
           padding: EdgeInsets.zero,
           children: [
-            // drawer header
-            DrawerHeader(
-              decoration: BoxDecoration(
-                  color: Colors.black87.withOpacity(1.0),
-                  border: const BorderDirectional(
-                      bottom: BorderSide(color: Colors.white10))),
-              child:
-                  const Text("Menu", style: TextStyle(color: Colors.white70)),
-            ),
             ListTile(
-              title:
-                  const Text('Home', style: TextStyle(color: Colors.white70)),
               onTap: () {},
             ),
             ListTile(
-                title: const Text('Favourites',
-                    style: TextStyle(color: Colors.white70)),
-                onTap: () {
-                  Get.to(const FavouritesScreen());
-                }),
+              title: Transform.translate(
+                offset: const Offset(-20, 0),
+                child: const Text(
+                  'Home',
+                  style: TextStyle(color: Colors.white70),
+                ),
+              ),
+              leading: const Icon(
+                Icons.home_rounded,
+                color: Colors.white70,
+              ),
+              onTap: () {
+                Navigator.pop(context);
+              },
+            ),
             ListTile(
-              title: const Text('Upload File',
-                  style: TextStyle(color: Colors.white70)),
+              title: Transform.translate(
+                offset: const Offset(-20, 0),
+                child: const Text(
+                  'Upload File',
+                  style: TextStyle(color: Colors.white70),
+                ),
+              ),
+              leading: const Icon(
+                Icons.file_upload_outlined,
+                color: Colors.white70,
+              ),
               onTap: () async {
                 // parse the String
                 Document? doc = await docCon.createNewDocument();
                 if (doc != null) {
                   Get.to(ReaderScreen(doc: doc));
                 }
+              },
+            ),
+            ListTile(
+              title: Transform.translate(
+                offset: const Offset(-20, 0),
+                child: const Text(
+                  'Favourites',
+                  style: TextStyle(color: Colors.white70),
+                ),
+              ),
+              leading: const Icon(
+                Icons.favorite,
+                color: Colors.white70,
+                size: 20.0,
+              ),
+              onTap: () {
+                Get.toNamed('/favourites');
+              },
+            ),
+            ListTile(
+              title: Transform.translate(
+                offset: const Offset(-20, 0),
+                child: const Text(
+                  'Folder',
+                  style: TextStyle(color: Colors.white70),
+                ),
+              ),
+              leading: const Icon(
+                Icons.folder_rounded,
+                color: Colors.white70,
+              ),
+              onTap: () {
+                Navigator.pop(context);
               },
             ),
           ],

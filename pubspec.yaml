@@ -23,6 +23,7 @@ dependencies:
   dropdown_button2: ^2.1.4
   syncfusion_flutter_pdf: ^21.2.10
   syncfusion_flutter_core: ^21.2.10
+  window_manager: ^0.3.4
 
 dev_dependencies:
   flutter_test:

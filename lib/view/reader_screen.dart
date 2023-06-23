@@ -8,7 +8,6 @@ import 'package:pdfreader2/pdfviewer/pdf_viewer_library.dart';
 import 'package:get/get.dart';
 import 'package:pdfreader2/controllers/document_controller.dart';
 import 'package:pdfreader2/controllers/favourite_controller.dart';
-import 'package:syncfusion_flutter_core/theme.dart';
 
 class ReaderScreen extends StatefulWidget {
   const ReaderScreen({Key? key, required this.doc}) : super(key: key);
@@ -39,22 +38,21 @@ class _ReaderScreenState extends State<ReaderScreen> {
       body: Row(
         children: [
           // component 1: the side menu
-          const _SideBar(),
+          // const _SideBar(),
           Expanded(
             child: Column(
               children: [
                 // component 2: the edit menu
-                _TopMenuBar(doc: widget.doc),
+                _TopMenuBar(
+                  doc: widget.doc,
+                ),
                 // component 3: the PDF view screen
-                Flexible(
+                Expanded(
                   child: SfPdfViewer.file(
                     File(widget.doc.docPath),
                     maxZoomLevel: double.infinity,
                     initialZoomLevel: computeZoomLevel(context),
-                    // onZoomLevelChanged: (details) {
-                    //   print(MediaQuery.of(context).size.width);
-                    //   print(details.newZoomLevel);
-                    // },
+                    pageSpacing: 0.0,
                   ),
                 )
               ],
@@ -68,6 +66,7 @@ class _ReaderScreenState extends State<ReaderScreen> {
 
 class _SideBar extends StatefulWidget {
   const _SideBar({Key? key}) : super(key: key);
+
   @override
   State<_SideBar> createState() => SideBar();
 }
@@ -139,6 +138,7 @@ class SideBar extends State<_SideBar> {
   }
 }
 
+// ignore: must_be_immutable
 class _TopMenuBar extends StatefulWidget {
   const _TopMenuBar({Key? key, required this.doc}) : super(key: key);
 
@@ -194,17 +194,20 @@ class TopMenuBar extends State<_TopMenuBar> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.center,
-          // todo: add menu options
           children: [
-            // textbox
             TextButton.icon(
-              onPressed: () {},
-              icon: const Icon(
-                Icons.edit,
-                color: Colors.white70,
+              onPressed: () {
+                Get.back();
+              },
+              icon: Transform.flip(
+                flipX: true,
+                child: const Icon(
+                  Icons.exit_to_app_sharp,
+                  color: Colors.white70,
+                ),
               ),
               label: const Text(
-                "Textbox",
+                "Back",
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(color: Colors.white70),
               ),
@@ -216,14 +219,15 @@ class TopMenuBar extends State<_TopMenuBar> {
               },
               color: Colors.black87,
               itemBuilder: (BuildContext context) {
-                return backgroundColourOptions.map((option) {
-                  return PopupMenuItem<String>(
-                    onTap: () {
-                      readCon.updateBackgroundcolour(option);
-                    },
-                    child: SizedBox(
-                      width: context.width,
-                      child: Row(
+                return backgroundColourOptions.map(
+                  (option) {
+                    return PopupMenuItem<String>(
+                      onTap: () {
+                        readCon.updateBackgroundcolour(option);
+                      },
+                      child: SizedBox(
+                        width: context.width,
+                        child: Row(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -241,10 +245,12 @@ class TopMenuBar extends State<_TopMenuBar> {
                                   ? 0.0
                                   : 20.0,
                             ),
-                          ]),
-                    ),
-                  );
-                }).toList();
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                ).toList();
               },
               offset: const Offset(0, 42),
               child: const Row(
@@ -267,27 +273,16 @@ class TopMenuBar extends State<_TopMenuBar> {
                 ],
               ),
             ),
-            // text size
+            // textbox
             TextButton.icon(
               onPressed: () {},
               icon: const Icon(
-                Icons.format_size,
+                Icons.edit,
                 color: Colors.white70,
               ),
               label: const Text(
-                "Text Size",
-                style: TextStyle(color: Colors.white70),
-              ),
-            ),
-            // text font
-            TextButton.icon(
-              onPressed: () {},
-              icon: const Icon(
-                Icons.title,
-                color: Colors.white70,
-              ),
-              label: const Text(
-                "Text Font",
+                "Textbox",
+                overflow: TextOverflow.ellipsis,
                 style: TextStyle(color: Colors.white70),
               ),
             ),

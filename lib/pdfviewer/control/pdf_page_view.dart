@@ -218,6 +218,11 @@ class PdfPageViewState extends State<PdfPageView> {
     super.dispose();
   }
 
+  // function to expand the PDF file image to fill the PDF reader viewport
+  double fitToScreen(BuildContext context) {
+    return MediaQuery.of(context).size.width / 670;
+  }
+
   // filters for the pdf document
   final ColorFilter kDefaultFilter = const ColorFilter.matrix(<double>[
     1.0, 0.0, 0.0, 0.0, 0.0, //
@@ -429,15 +434,14 @@ class PdfPageViewState extends State<PdfPageView> {
                     }
                     if (isPrimaryKeyPressed &&
                         event.logicalKey == LogicalKeyboardKey.digit0) {
-                      widget.pdfViewerController.zoomLevel = 1.0;
+                      widget.pdfViewerController.zoomLevel =
+                          fitToScreen(context);
                     }
                     if (isPrimaryKeyPressed &&
                         event.logicalKey == LogicalKeyboardKey.minus) {
                       if (event is RawKeyDownEvent) {
                         double zoomLevel = widget.pdfViewerController.zoomLevel;
-                        if (zoomLevel > 1) {
-                          zoomLevel = zoomLevel - 0.25;
-                        }
+                        zoomLevel = zoomLevel - 0.25;
                         widget.pdfViewerController.zoomLevel = zoomLevel;
                       }
                     }

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'dart:io';
 import 'package:pdfreader2/controllers/favourite_controller.dart';
@@ -40,38 +39,39 @@ class _DocumentTileState extends State<DocumentTile> {
         if (!File(widget.doc.docPath).existsSync()) {
           // show warning
           showDialog(
-              context: context,
-              barrierDismissible: false,
-              builder: (BuildContext context) => AlertDialog(
-                    backgroundColor: Colors.black87,
-                    elevation: 24.0,
-                    title: const Text(
-                      'File Not Available',
-                      style: TextStyle(
-                        color: Colors.white70,
-                      ),
+            context: context,
+            barrierDismissible: false,
+            builder: (BuildContext context) => AlertDialog(
+              backgroundColor: Colors.black87,
+              elevation: 24.0,
+              title: const Text(
+                'File Not Available',
+                style: TextStyle(
+                  color: Colors.white70,
+                ),
+              ),
+              content: const Text(
+                'The file you are trying to open is no longer available and cannot be opened.',
+                style: TextStyle(
+                  color: Colors.white70,
+                ),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    docCon.removeMissingDocuments();
+                    Get.back();
+                  },
+                  child: const Text(
+                    'Ok',
+                    style: TextStyle(
+                      color: Colors.white70,
                     ),
-                    content: const Text(
-                      'The file you are trying to open is no longer available and cannot be opened.',
-                      style: TextStyle(
-                        color: Colors.white70,
-                      ),
-                    ),
-                    actions: [
-                      TextButton(
-                        onPressed: () {
-                          docCon.removeMissingDocuments();
-                          Get.back();
-                        },
-                        child: const Text(
-                          'Ok',
-                          style: TextStyle(
-                            color: Colors.white70,
-                          ),
-                        ),
-                      )
-                    ],
-                  ));
+                  ),
+                )
+              ],
+            ),
+          );
         } else {
           // case where the document exists in the user's local filesystem
           Document openedDoc =
@@ -81,7 +81,9 @@ class _DocumentTileState extends State<DocumentTile> {
       },
       title: Text(
         widget.doc.docTitle,
-        style: GoogleFonts.nunito(color: Colors.white70),
+        style: const TextStyle(
+          color: Colors.white70,
+        ),
         overflow: TextOverflow.ellipsis,
       ),
       trailing: Column(
@@ -90,8 +92,9 @@ class _DocumentTileState extends State<DocumentTile> {
         children: [
           GestureDetector(
             onTap: () {
-              FavouriteController favCon =
-                  Get.put(FavouriteController(doc: widget.doc));
+              FavouriteController favCon = Get.put(
+                FavouriteController(doc: widget.doc),
+              );
               favCon.toggleFavourite();
               favCon.dispose();
             },
@@ -106,7 +109,7 @@ class _DocumentTileState extends State<DocumentTile> {
           ),
           Text(
             widget.doc.docDate,
-            style: GoogleFonts.nunito(color: Colors.grey, fontSize: 16.0),
+            style: const TextStyle(color: Colors.grey, fontSize: 16.0),
           ),
         ],
       ),
