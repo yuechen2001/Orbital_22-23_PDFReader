@@ -12,7 +12,7 @@
 - More platforms coming soon!!
 
 ## How to download and try out our app
-- Download the installer through our most recent [Release Page] (https://github.com/yuechen2001/Orbital_22-23_PDFReader/releases/tag/v1.0.0)
+- Download the installer through our most recent [release page](https://github.com/yuechen2001/Orbital_22-23_PDFReader/releases/tag/v1.0.0)!
 > If there are any warnings about the installers being a virus, do ignore them
 - Open and set up the installer
 - Try out our app! Load PDF files from your own local filesystem
