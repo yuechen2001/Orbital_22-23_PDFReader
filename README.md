@@ -9,7 +9,7 @@
 
 ## Supported Platforms
 - Windows
-> More platforms coming soon!!
+- More platforms coming soon!!
 
 ## How to download and try out our app
 - Download the installer through our most recent [Release Page] (https://github.com/yuechen2001/Orbital_22-23_PDFReader/releases/tag/v1.0.0)
@@ -20,7 +20,3 @@
 > - Folder(Home/Favourites Screen)
 > - Textbox(Reader Screen)
 > - Draw(Reader Screen)
-
-## Support/Feedback
-- @kiwibang
-- @yuechen2001
