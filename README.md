@@ -7,8 +7,9 @@
 - Save your most recently opened files
 - Automatically remove files that no longer exist on the local filesystem
 
-### Supported Platforms
+## Supported Platforms
 - Windows
+> More platforms coming soon!!
 
 ## How to download and try out our app
 - Download the installer through our most recent [Release Page] (https://github.com/yuechen2001/Orbital_22-23_PDFReader/releases/tag/v1.0.0)
