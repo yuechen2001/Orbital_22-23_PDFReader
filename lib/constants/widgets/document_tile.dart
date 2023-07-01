@@ -42,7 +42,7 @@ class _DocumentTileState extends State<DocumentTile> {
             context: context,
             barrierDismissible: false,
             builder: (BuildContext context) => AlertDialog(
-              backgroundColor: Colors.black87,
+              backgroundColor: const Color.fromARGB(221, 39, 38, 38),
               elevation: 24.0,
               title: const Text(
                 'File Not Available',
