@@ -26,8 +26,10 @@ Future<List<Box>> _openBox() async {
 
     // Establish link to local storage
     var recentFiles = await Hive.openBox<Document>("recent_files");
+    var existingFolders = await Hive.openBox<String>("existing_folders");
 
     boxes.add(recentFiles);
+    boxes.add(existingFolders);
     return boxes;
   } catch (error) {
     rethrow;
@@ -64,10 +66,9 @@ class MyApp extends StatelessWidget {
       initialRoute: '/',
       getPages: [
         GetPage(
-          name: '/',
-          page: () => const HomeScreen(),
-          transition: Transition.cupertino
-        ),
+            name: '/',
+            page: () => const HomeScreen(),
+            transition: Transition.cupertino),
         GetPage(
           name: '/favourites',
           page: () => const FavouritesScreen(),

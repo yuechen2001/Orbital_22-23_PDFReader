@@ -24,8 +24,13 @@ class DocumentController extends GetxController {
       DateTime now = DateTime.now();
       String formattedDate = DateFormat('EEEE, MMM d, yyyy').format(now);
       // convert the file to a document object
-      Document doc =
-          Document(picked.name, picked.path!, formattedDate, now, false);
+      Document doc = Document(
+          docTitle: picked.name,
+          docPath: picked.path!,
+          docDate: formattedDate,
+          lastOpened: now,
+          favourited: false,
+          folders: []);
       recentFiles.put(picked.name, doc);
       return doc;
     } else {
@@ -57,7 +62,12 @@ class DocumentController extends GetxController {
 
     // convert the file to a document object
     Document doc = Document(
-        curr.docTitle, curr.docPath, formattedDate, now, curr.favourited);
+        docTitle: curr.docTitle,
+        docPath: curr.docPath,
+        docDate: formattedDate,
+        lastOpened: now,
+        favourited: curr.favourited,
+        folders: curr.folders);
     recentFiles.put(doc.docTitle, doc);
 
     return doc;
