@@ -3,10 +3,12 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:pdfreader2/models/document_model.dart';
 
 import 'package:flutter/material.dart';
+import 'package:pdfreader2/view/home_screen.dart';
 import 'package:pdfreader2/view/reader_screen.dart';
 
 import '../constants/widgets/document_tile.dart';
 import '../controllers/document_controller.dart';
+import 'folders_screen.dart';
 
 class FavouritesScreen extends StatefulWidget {
   const FavouritesScreen({super.key});
@@ -151,7 +153,7 @@ class _FavouritesScreenState extends State<FavouritesScreen> {
                 color: Colors.white70,
               ),
               onTap: () {
-                Get.toNamed('/');
+                Get.to(const HomeScreen());
               },
             ),
             ListTile(
@@ -187,9 +189,7 @@ class _FavouritesScreenState extends State<FavouritesScreen> {
                 color: Colors.white70,
                 size: 20.0,
               ),
-              onTap: () {
-                Navigator.pop(context);
-              },
+              onTap: () {},
             ),
             ListTile(
               title: Transform.translate(
@@ -204,7 +204,7 @@ class _FavouritesScreenState extends State<FavouritesScreen> {
                 color: Colors.white70,
               ),
               onTap: () {
-                Navigator.pop(context);
+                Get.to(const FoldersScreen());
               },
             ),
           ],

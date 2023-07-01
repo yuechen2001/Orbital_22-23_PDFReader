@@ -6,6 +6,8 @@ import 'package:pdfreader2/view/reader_screen.dart';
 import '../constants/widgets/document_tile.dart';
 import '../controllers/document_controller.dart';
 import '../models/document_model.dart';
+import 'favourites_screen.dart';
+import 'folders_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -161,9 +163,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 Icons.home_rounded,
                 color: Colors.white70,
               ),
-              onTap: () {
-                Navigator.pop(context);
-              },
+              onTap: () {},
             ),
             ListTile(
               title: Transform.translate(
@@ -199,7 +199,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 size: 20.0,
               ),
               onTap: () {
-                Get.toNamed('/favourites');
+                Get.to(const FavouritesScreen());
               },
             ),
             ListTile(
@@ -215,7 +215,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 color: Colors.white70,
               ),
               onTap: () {
-                Navigator.pop(context);
+                Get.to(const FoldersScreen());
               },
             ),
           ],
