@@ -9,7 +9,7 @@ import '../constants/widgets/side_navigation_bar.dart';
 import '../controllers/document_controller.dart';
 
 class FoldersScreen extends StatefulWidget {
-  const FoldersScreen({super.key});
+  const FoldersScreen({Key? key}) : super(key: key);
 
   @override
   State<FoldersScreen> createState() => _FoldersScreenState();

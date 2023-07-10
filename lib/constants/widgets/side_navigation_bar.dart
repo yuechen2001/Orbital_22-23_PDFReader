@@ -15,7 +15,7 @@ class SideNavigationBar extends StatelessWidget {
   final DocumentController docCon = Get.find<DocumentController>();
 
   @override
-  Widget build(BuildContext content) {
+  Widget build(BuildContext context) {
     return Drawer(
       backgroundColor: Colors.black87.withOpacity(1.0),
       // add a list of buttons as child

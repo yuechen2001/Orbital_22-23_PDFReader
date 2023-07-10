@@ -122,6 +122,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               Document doc = sorted[index];
                               return DocumentTile(
                                 doc: doc,
+                                canDelete: false,
                               );
                             },
                             separatorBuilder:
