@@ -31,13 +31,11 @@ class FoldersController extends GetxController {
   void deleteFolder(String folderName) {
     existingFolders.delete(folderName);
 
-    // Delete the folder from all the documents
+    // Delete the folder reference from all the documents
     Iterable<MapEntry<dynamic, Document>> filesIter =
         recentFiles.toMap().entries;
     for (MapEntry<dynamic, Document> file in filesIter) {
-      for (String folder in file.value.folders) {
-        file.value.folders.remove(folder);
-      }
+      file.value.folders.remove(folderName);
     }
     update();
   }
@@ -45,12 +43,10 @@ class FoldersController extends GetxController {
   void clearFolders() {
     existingFolders.clear();
 
-    // Delete all folders from all the documents
+    // Delete all folders references from all the documents
     Iterable<MapEntry<dynamic, Document>> filesIter =
         recentFiles.toMap().entries;
-    // loop over the iterable
     for (MapEntry<dynamic, Document> file in filesIter) {
-      // if the file no longer exists in the system, update the recentFiles box
       file.value.folders.clear();
     }
     update();

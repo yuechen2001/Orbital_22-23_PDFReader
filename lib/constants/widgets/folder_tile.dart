@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 import 'package:pdfreader2/controllers/folders_controller.dart';
-import 'dart:io';
+import 'package:pdfreader2/view/individual_folder_screen.dart';
 
 import '../../controllers/document_controller.dart';
-import '../../models/document_model.dart';
-import '../../view/reader_screen.dart';
 
 class FolderTile extends StatefulWidget {
   const FolderTile({super.key, required this.folderName});
@@ -24,7 +21,7 @@ class _FolderTileState extends State<FolderTile> {
     return ListTile(
       visualDensity: const VisualDensity(vertical: 2),
       onTap: () async {
-        print("It works!");
+        Get.to(IndividualFolderScreen(currentFolder: widget.folderName));
       },
       title: Text(
         widget.folderName,
@@ -48,44 +45,47 @@ class _DeleteButton extends StatelessWidget {
 
   final String folderName;
   final FoldersController folderCon = Get.find<FoldersController>();
+
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        showDialog(
-            context: context,
-            barrierDismissible: true,
-            builder: (BuildContext context) => AlertDialog(
-                  backgroundColor: const Color.fromARGB(221, 39, 38, 38),
-                  elevation: 24.0,
-                  title: const Text(
-                    'Are you sure about deleting this folder?',
-                    style: TextStyle(
-                      color: Colors.white70,
-                    ),
+    Future<void> handleDeleteFolder() async {
+      showDialog(
+          context: context,
+          barrierDismissible: true,
+          builder: (BuildContext context) => AlertDialog(
+                backgroundColor: const Color.fromARGB(221, 39, 38, 38),
+                elevation: 24.0,
+                title: const Text(
+                  'Are you sure about deleting this folder?',
+                  style: TextStyle(
+                    color: Colors.white70,
                   ),
-                  content: const Text(
-                    'Deleted folders cannot be recovered.',
-                    style: TextStyle(
-                      color: Colors.white70,
-                    ),
+                ),
+                content: const Text(
+                  'Deleted folders cannot be recovered.',
+                  style: TextStyle(
+                    color: Colors.white70,
                   ),
-                  actions: [
-                    TextButton(
-                      onPressed: () {
-                        Get.back();
-                        folderCon.deleteFolder(folderName);
-                      },
-                      child: const Text(
-                        'Confirm Delete',
-                        style: TextStyle(
-                          color: Colors.white70,
-                        ),
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Get.back();
+                      folderCon.deleteFolder(folderName);
+                    },
+                    child: const Text(
+                      'Ok',
+                      style: TextStyle(
+                        color: Colors.white70,
                       ),
-                    )
-                  ],
-                ));
-      },
+                    ),
+                  )
+                ],
+              ));
+    }
+
+    return GestureDetector(
+      onTap: handleDeleteFolder,
       child: const Icon(
         Icons.delete,
         color: Colors.redAccent,

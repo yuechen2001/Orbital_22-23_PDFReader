@@ -118,6 +118,7 @@ class _FavouritesScreenState extends State<FavouritesScreen> {
                               Document doc = sorted[index];
                               return DocumentTile(
                                 doc: doc,
+                                canDelete: false,
                               );
                             },
                             separatorBuilder:

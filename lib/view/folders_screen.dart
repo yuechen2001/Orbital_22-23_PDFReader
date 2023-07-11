@@ -25,6 +25,57 @@ class _FoldersScreenState extends State<FoldersScreen> {
     super.dispose();
   }
 
+  Future<void> _handleCreateFolder(TextEditingController textCon) async {
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext context) => AlertDialog(
+        backgroundColor: const Color.fromARGB(221, 39, 38, 38),
+        elevation: 24.0,
+        title: const Text(
+          'Name Your New Folder: ',
+          style: TextStyle(
+            color: Colors.white70,
+          ),
+        ),
+        content: TextFormField(
+          autofocus: true,
+          controller: textCon,
+          style: const TextStyle(
+            color: Colors.white70,
+          ),
+          decoration: InputDecoration(
+              enabledBorder: const OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.grey),
+              ),
+              border: const OutlineInputBorder(
+                borderSide: BorderSide(
+                  color: Colors.white70,
+                ),
+              ),
+              hintText: 'E.g. My Favourite Books',
+              hintStyle: TextStyle(color: Colors.white70.withOpacity(0.2))),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              if (textCon.text.isNotEmpty) {
+                folderCon.createNewFolder(textCon.text);
+                Get.back();
+              }
+            },
+            child: const Text(
+              'Ok',
+              style: TextStyle(
+                color: Colors.white70,
+              ),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -137,56 +188,7 @@ class _FoldersScreenState extends State<FoldersScreen> {
                             onTap: () {
                               final TextEditingController textCon =
                                   TextEditingController();
-                              showDialog(
-                                context: context,
-                                barrierDismissible: true,
-                                builder: (BuildContext context) => AlertDialog(
-                                  backgroundColor:
-                                      const Color.fromARGB(221, 39, 38, 38),
-                                  elevation: 24.0,
-                                  title: const Text(
-                                    'Name Your New Folder: ',
-                                    style: TextStyle(
-                                      color: Colors.white70,
-                                    ),
-                                  ),
-                                  content: TextFormField(
-                                    autofocus: true,
-                                    controller: textCon,
-                                    style: const TextStyle(
-                                      color: Colors.white70,
-                                    ),
-                                    decoration: InputDecoration(
-                                        enabledBorder: const OutlineInputBorder(
-                                          borderSide:
-                                              BorderSide(color: Colors.grey),
-                                        ),
-                                        border: const OutlineInputBorder(
-                                          borderSide: BorderSide(
-                                            color: Colors.white70,
-                                          ),
-                                        ),
-                                        hintText: 'E.g. My Favourite Books',
-                                        hintStyle: TextStyle(
-                                            color: Colors.white70
-                                                .withOpacity(0.2))),
-                                  ),
-                                  actions: [
-                                    TextButton(
-                                      onPressed: () {
-                                        folderCon.createNewFolder(textCon.text);
-                                        Get.back();
-                                      },
-                                      child: const Text(
-                                        'Ok',
-                                        style: TextStyle(
-                                          color: Colors.white70,
-                                        ),
-                                      ),
-                                    )
-                                  ],
-                                ),
-                              );
+                              _handleCreateFolder(textCon);
                             },
                             child: Container(
                               decoration: BoxDecoration(
