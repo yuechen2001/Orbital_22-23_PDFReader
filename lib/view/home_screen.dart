@@ -119,7 +119,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             shrinkWrap: true,
                             itemCount: sorted.length,
                             itemBuilder: (context, index) {
-                              Document doc = sorted[index];
+                              Document doc = sorted.elementAt(index);
                               return DocumentTile(
                                 doc: doc,
                                 canDelete: false,

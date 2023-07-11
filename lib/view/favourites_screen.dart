@@ -96,7 +96,12 @@ class _FavouritesScreenState extends State<FavouritesScreen> {
                       ValueListenableBuilder(
                         valueListenable: docCon.recentFiles.listenable(),
                         builder: (context, Box<Document> box, _) {
-                          if (box.values.isEmpty) {
+                          final sorted = box.values
+                              .where((doc) => doc.favourited)
+                              .toList()
+                            ..sort(
+                                (a, b) => b.lastOpened.compareTo(a.lastOpened));
+                          if (sorted.isEmpty) {
                             return const Center(
                               child: Text("No Documents Found.",
                                   style: TextStyle(
@@ -104,28 +109,24 @@ class _FavouritesScreenState extends State<FavouritesScreen> {
                                   ),
                                   overflow: TextOverflow.ellipsis),
                             );
+                          } else {
+                            return ListView.separated(
+                              scrollDirection: Axis.vertical,
+                              shrinkWrap: true,
+                              itemCount: sorted.length,
+                              itemBuilder: (context, index) {
+                                Document doc = sorted[index];
+                                return DocumentTile(
+                                  doc: doc,
+                                  canDelete: false,
+                                );
+                              },
+                              separatorBuilder:
+                                  (BuildContext context, int index) {
+                                return const Divider(color: Colors.white10);
+                              },
+                            );
                           }
-                          final sorted = box.values
-                              .where((doc) => doc.favourited)
-                              .toList()
-                            ..sort(
-                                (a, b) => b.lastOpened.compareTo(a.lastOpened));
-                          return ListView.separated(
-                            scrollDirection: Axis.vertical,
-                            shrinkWrap: true,
-                            itemCount: sorted.length,
-                            itemBuilder: (context, index) {
-                              Document doc = sorted[index];
-                              return DocumentTile(
-                                doc: doc,
-                                canDelete: false,
-                              );
-                            },
-                            separatorBuilder:
-                                (BuildContext context, int index) {
-                              return const Divider(color: Colors.white10);
-                            },
-                          );
                         },
                       ),
                     ],
