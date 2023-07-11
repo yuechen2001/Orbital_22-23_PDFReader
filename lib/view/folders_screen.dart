@@ -1,32 +1,83 @@
 import 'package:get/get.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:pdfreader2/controllers/folders_controller.dart';
 
 import 'package:flutter/material.dart';
-import '../constants/widgets/document_tile.dart';
+
+import '../constants/widgets/folder_tile.dart';
 import '../constants/widgets/side_navigation_bar.dart';
 import '../controllers/document_controller.dart';
-import '../models/document_model.dart';
 
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+class FoldersScreen extends StatefulWidget {
+  const FoldersScreen({Key? key}) : super(key: key);
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  State<FoldersScreen> createState() => _FoldersScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _FoldersScreenState extends State<FoldersScreen> {
   final DocumentController docCon = Get.find<DocumentController>();
+  final FoldersController folderCon = Get.put(FoldersController());
 
   @override
-  void initState() {
-    docCon.removeMissingDocuments();
-    super.initState();
+  void dispose() {
+    folderCon.dispose();
+    super.dispose();
+  }
+
+  Future<void> _handleCreateFolder(TextEditingController textCon) async {
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext context) => AlertDialog(
+        backgroundColor: const Color.fromARGB(221, 39, 38, 38),
+        elevation: 24.0,
+        title: const Text(
+          'Name Your New Folder: ',
+          style: TextStyle(
+            color: Colors.white70,
+          ),
+        ),
+        content: TextFormField(
+          autofocus: true,
+          controller: textCon,
+          style: const TextStyle(
+            color: Colors.white70,
+          ),
+          decoration: InputDecoration(
+              enabledBorder: const OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.grey),
+              ),
+              border: const OutlineInputBorder(
+                borderSide: BorderSide(
+                  color: Colors.white70,
+                ),
+              ),
+              hintText: 'E.g. My Favourite Books',
+              hintStyle: TextStyle(color: Colors.white70.withOpacity(0.2))),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              if (textCon.text.isNotEmpty) {
+                folderCon.createNewFolder(textCon.text);
+                Get.back();
+              }
+            },
+            child: const Text(
+              'Ok',
+              style: TextStyle(
+                color: Colors.white70,
+              ),
+            ),
+          )
+        ],
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    // every time the home screen is rebuilt, check if any of the files
-    // in the recent files list has been deleted. if true, update the db
     return Scaffold(
         body: Row(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -50,7 +101,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       onPressed: () {
                         // todo: add logic for toggling the buttons
                         if (Scaffold.of(context).isDrawerOpen) {
-                          // if drawer opeRned
+                          // if drawer opened
                           // close the drawer
                           Scaffold.of(context).closeDrawer();
                           // todo: change button orientation to face right
@@ -78,12 +129,12 @@ class _HomeScreenState extends State<HomeScreen> {
                     children: [
                       const Column(
                         children: [
-                          Text("Welcome",
+                          Text("Folders",
                               style: TextStyle(
                                   fontSize: 40.0,
                                   fontWeight: FontWeight.bold,
                                   color: Colors.white70)),
-                          Text("How can I help you today?",
+                          Text("Stay organised, stay winning.",
                               style: TextStyle(
                                   fontSize: 30.0,
                                   fontWeight: FontWeight.bold,
@@ -92,38 +143,34 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                       const Padding(
                         padding: EdgeInsets.fromLTRB(0.0, 12.0, 0.0, 12.0),
-                        child: Text("Recent Files",
+                        child: Text("Your Folders",
                             style: TextStyle(
                                 fontSize: 20.0,
                                 fontWeight: FontWeight.bold,
                                 color: Colors.white70)),
                       ),
                       const Divider(color: Colors.white),
-                      ValueListenableBuilder<Box<Document>>(
-                        valueListenable: docCon.recentFiles.listenable(),
-                        builder: (context, box, _) {
+                      ValueListenableBuilder(
+                        valueListenable: folderCon.existingFolders.listenable(),
+                        builder: (context, Box<String> box, _) {
                           if (box.values.isEmpty) {
                             return const Center(
-                              child: Text("No Documents Found.",
-                                  style: TextStyle(
-                                    color: Colors.white70,
-                                  ),
-                                  overflow: TextOverflow.ellipsis),
+                              child: Text(
+                                "No Folders Found.",
+                                style: TextStyle(
+                                  color: Colors.white70,
+                                ),
+                                overflow: TextOverflow.ellipsis,
+                              ),
                             );
                           }
-                          final sorted = box.values.toList()
-                            ..sort(
-                                (a, b) => b.lastOpened.compareTo(a.lastOpened));
                           return ListView.separated(
                             scrollDirection: Axis.vertical,
                             shrinkWrap: true,
-                            itemCount: sorted.length,
+                            itemCount: box.values.length,
                             itemBuilder: (context, index) {
-                              Document doc = sorted.elementAt(index);
-                              return DocumentTile(
-                                doc: doc,
-                                canDelete: false,
-                              );
+                              String name = box.values.elementAt(index);
+                              return FolderTile(folderName: name);
                             },
                             separatorBuilder:
                                 (BuildContext context, int index) {
@@ -132,6 +179,32 @@ class _HomeScreenState extends State<HomeScreen> {
                           );
                         },
                       ),
+                      const Spacer(),
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 8.0),
+                        child: Align(
+                          alignment: Alignment.bottomRight,
+                          child: GestureDetector(
+                            onTap: () {
+                              final TextEditingController textCon =
+                                  TextEditingController();
+                              _handleCreateFolder(textCon);
+                            },
+                            child: Container(
+                              decoration: BoxDecoration(
+                                  color: Colors.white10,
+                                  borderRadius: BorderRadius.circular(8.0)),
+                              child: const Padding(
+                                padding: EdgeInsets.all(8.0),
+                                child: Icon(
+                                  Icons.add,
+                                  color: Colors.white70,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      )
                     ],
                   ),
                 ),
@@ -139,6 +212,6 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ],
         ),
-        drawer: SideNavigationBar(currentPage: "Home"));
+        drawer: SideNavigationBar(currentPage: "Folders"));
   }
 }

@@ -9,9 +9,12 @@ import '../../models/document_model.dart';
 import '../../view/reader_screen.dart';
 
 class DocumentTile extends StatefulWidget {
-  const DocumentTile({super.key, required this.doc});
+  const DocumentTile(
+      {super.key, this.folderName, required this.doc, required this.canDelete});
 
+  final String? folderName;
   final Document doc;
+  final bool canDelete;
 
   @override
   State<DocumentTile> createState() => _DocumentTileState();
@@ -30,52 +33,94 @@ class _DocumentTileState extends State<DocumentTile> {
     color: Colors.white70,
   );
 
+  Future<void> _handleDeletionFromFolder() async {
+    if (widget.canDelete) {
+      showDialog(
+        context: context,
+        barrierDismissible: true,
+        builder: (BuildContext context) => AlertDialog(
+          backgroundColor: const Color.fromARGB(221, 39, 38, 38),
+          elevation: 24.0,
+          title: const Text(
+            'Remove file from folder?',
+            style: TextStyle(
+              color: Colors.white70,
+            ),
+          ),
+          content: const Text(
+            'You can always add the file back again if you want to!',
+            style: TextStyle(
+              color: Colors.white70,
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                docCon.removeFromFolder(
+                    widget.folderName!, widget.doc.docTitle);
+                Get.back();
+              },
+              child: const Text(
+                'Ok',
+                style: TextStyle(
+                  color: Colors.white70,
+                ),
+              ),
+            )
+          ],
+        ),
+      );
+    }
+  }
+
+  Future<void> _handleMissingFile() async {
+    // show warning
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) => AlertDialog(
+                backgroundColor: const Color.fromARGB(221, 39, 38, 38),
+                elevation: 24.0,
+                title: const Text(
+                  'File Not Available',
+                  style: TextStyle(
+                    color: Colors.white70,
+                  ),
+                ),
+                content: const Text(
+                  'The file you are trying to open is no longer available and cannot be opened.',
+                  style: TextStyle(
+                    color: Colors.white70,
+                  ),
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      docCon.removeMissingDocuments();
+                      Get.back();
+                    },
+                    child: const Text(
+                      'Ok',
+                      style: TextStyle(
+                        color: Colors.white70,
+                      ),
+                    ),
+                  )
+                ]));
+  }
+
   @override
   Widget build(BuildContext context) {
     return ListTile(
       visualDensity: const VisualDensity(vertical: 2),
-      onTap: () async {
+      onLongPress: _handleDeletionFromFolder,
+      onTap: () {
         // gc: file does not exist
         if (!File(widget.doc.docPath).existsSync()) {
-          // show warning
-          showDialog(
-            context: context,
-            barrierDismissible: false,
-            builder: (BuildContext context) => AlertDialog(
-              backgroundColor: Colors.black87,
-              elevation: 24.0,
-              title: const Text(
-                'File Not Available',
-                style: TextStyle(
-                  color: Colors.white70,
-                ),
-              ),
-              content: const Text(
-                'The file you are trying to open is no longer available and cannot be opened.',
-                style: TextStyle(
-                  color: Colors.white70,
-                ),
-              ),
-              actions: [
-                TextButton(
-                  onPressed: () {
-                    docCon.removeMissingDocuments();
-                    Get.back();
-                  },
-                  child: const Text(
-                    'Ok',
-                    style: TextStyle(
-                      color: Colors.white70,
-                    ),
-                  ),
-                )
-              ],
-            ),
-          );
+          _handleMissingFile();
         } else {
           // case where the document exists in the user's local filesystem
-          Document openedDoc =
-              docCon.updateLastOpened(docTitle: widget.doc.docTitle);
+          Document openedDoc = docCon.updateLastOpened(widget.doc.docTitle);
           Get.to(ReaderScreen(doc: openedDoc));
         }
       },

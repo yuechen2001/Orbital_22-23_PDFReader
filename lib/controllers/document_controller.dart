@@ -23,10 +23,16 @@ class DocumentController extends GetxController {
     if (picked != null) {
       DateTime now = DateTime.now();
       String formattedDate = DateFormat('EEEE, MMM d, yyyy').format(now);
+      String formattedName = picked.name.substring(0, picked.name.length - 4);
       // convert the file to a document object
-      Document doc =
-          Document(picked.name, picked.path!, formattedDate, now, false);
-      recentFiles.put(picked.name, doc);
+      Document doc = Document(
+          docTitle: formattedName,
+          docPath: picked.path!,
+          docDate: formattedDate,
+          lastOpened: now,
+          favourited: false,
+          folders: []);
+      recentFiles.put(formattedName, doc);
       return doc;
     } else {
       return null;
@@ -48,7 +54,7 @@ class DocumentController extends GetxController {
     return file;
   }
 
-  Document updateLastOpened({required String docTitle}) {
+  Document updateLastOpened(String docTitle) {
     Document curr = recentFiles.get(docTitle)!;
 
     // update the last opened time
@@ -57,15 +63,31 @@ class DocumentController extends GetxController {
 
     // convert the file to a document object
     Document doc = Document(
-        curr.docTitle, curr.docPath, formattedDate, now, curr.favourited);
+        docTitle: curr.docTitle,
+        docPath: curr.docPath,
+        docDate: formattedDate,
+        lastOpened: now,
+        favourited: curr.favourited,
+        folders: curr.folders);
     recentFiles.put(doc.docTitle, doc);
 
     return doc;
   }
 
-  void clearRecentFiles() {
-    recentFiles.clear();
-    update();
+  void addToFolder(String folderName, String docTitle) {
+    Document curr = recentFiles.get(docTitle)!;
+
+    // update the folder list
+    curr.folders.add(folderName);
+    recentFiles.put(docTitle, curr);
+  }
+
+  void removeFromFolder(String folderName, String docTitle) {
+    Document curr = recentFiles.get(docTitle)!;
+
+    // update the folder list
+    curr.folders.remove(folderName);
+    recentFiles.put(docTitle, curr);
   }
 
   // method that will loop over all the files in the db, deleting any files
@@ -81,6 +103,11 @@ class DocumentController extends GetxController {
         recentFiles.delete(file.key);
       }
     }
+  }
+
+  void clearRecentFiles() {
+    recentFiles.clear();
+    update();
   }
 
   @override
