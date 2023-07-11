@@ -13,6 +13,10 @@ import '../common/pdfviewer_helper.dart';
 import 'pdf_page_view.dart';
 import 'pdf_scrollable.dart';
 import 'single_page_view.dart';
+import 'package:get/get.dart';
+import 'package:pdfreader2/controllers/reader_controller.dart';
+import 'package:pdfreader2/constants/widgets/textbox_widget.dart';
+import 'package:pdfreader2/constants/widgets/pdf_page_view_with_annotations.dart';
 
 /// Instance of TextSelectionHelper.
 TextSelectionHelper _textSelectionHelper = TextSelectionHelper();
@@ -324,6 +328,8 @@ class CanvasRenderBox extends RenderBox {
   /// If true, hyperlink navigation is enabled.
   late bool enableHyperlinkNavigation;
 
+  ReaderController readCon = Get.find<ReaderController>();
+
   int? _viewId;
   int? _destinationPageIndex;
   late Offset _totalPageOffset;
@@ -397,10 +403,22 @@ class CanvasRenderBox extends RenderBox {
   /// Handles the tap down event
   void handleTapDown(TapDownDetails details) {
     _tapDetails = details.localPosition;
+    print(_tapDetails!.dx);
+    print(_tapDetails!.dy);
+    print(pageIndex);
     if (kIsDesktop &&
         !isMobileWebView &&
         enableTextSelection &&
         interactionMode == PdfInteractionMode.selection) {
+      if (readCon.textBoxMode.value) {
+        readCon.children[pageIndex].updateAnnotations(
+          TextboxWidget(
+            key: UniqueKey(),
+            x: _tapDetails!.dx,
+            y: _tapDetails!.dy,
+          ),
+        );
+      }
       if (details.kind == PointerDeviceKind.mouse) {
         _isMousePointer = true;
       } else {

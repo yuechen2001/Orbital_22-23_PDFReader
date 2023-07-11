@@ -1,6 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:pdfreader2/constants/widgets/textbox_widget.dart';
 import 'package:pdfreader2/controllers/reader_controller.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:syncfusion_flutter_pdf/pdf.dart';
@@ -195,6 +196,9 @@ class PdfPageViewState extends State<PdfPageView> {
 
   @override
   void initState() {
+    _cursor = readCon.textBoxMode.value
+        ? SystemMouseCursors.text
+        : SystemMouseCursors.basic;
     if (kIsDesktop && !widget.isMobileWebView) {
       helper.preventDefaultMenu();
       focusNode.addListener(() {
@@ -305,17 +309,19 @@ class PdfPageViewState extends State<PdfPageView> {
                           : const Color(0xFF303030)),
                 )
               ])
-            : Row(children: <Widget>[
-                image,
-                Container(
-                  width: widget.isSinglePageView ? 0.0 : pageSpacing,
-                  color: _pdfViewerThemeData!.backgroundColor ??
-                      (Theme.of(context).colorScheme.brightness ==
-                              Brightness.light
-                          ? const Color(0xFFD6D6D6)
-                          : const Color(0xFF303030)),
-                )
-              ]),
+            : Row(
+                children: <Widget>[
+                  image,
+                  Container(
+                    width: widget.isSinglePageView ? 0.0 : pageSpacing,
+                    color: _pdfViewerThemeData!.backgroundColor ??
+                        (Theme.of(context).colorScheme.brightness ==
+                                Brightness.light
+                            ? const Color(0xFFD6D6D6)
+                            : const Color(0xFF303030)),
+                  )
+                ],
+              ),
       );
       int quarterTurns = 0;
       if (rotatedAngle == PdfPageRotateAngle.rotateAngle90) {
@@ -328,39 +334,40 @@ class PdfPageViewState extends State<PdfPageView> {
       final bool isRotatedTo90or270 =
           rotatedAngle == PdfPageRotateAngle.rotateAngle90 ||
               rotatedAngle == PdfPageRotateAngle.rotateAngle270;
+      final PdfViewerCanvas pdfViewerCanvas = PdfViewerCanvas(
+        _canvasKey,
+        isRotatedTo90or270 ? widget.width : widget.height,
+        isRotatedTo90or270 ? widget.height : widget.width,
+        widget.pdfDocument,
+        widget.pageIndex,
+        widget.pdfPages,
+        widget.interactionMode,
+        widget.pdfViewerController,
+        widget.enableDocumentLinkAnnotation,
+        widget.enableTextSelection,
+        widget.onTextSelectionChanged,
+        widget.onHyperlinkClicked,
+        widget.onTextSelectionDragStarted,
+        widget.onTextSelectionDragEnded,
+        widget.textCollection,
+        widget.currentSearchTextHighlightColor,
+        widget.otherSearchTextHighlightColor,
+        widget.pdfTextSearchResult,
+        widget.isMobileWebView,
+        widget.pdfScrollableStateKey,
+        widget.singlePageViewStateKey,
+        widget.viewportGlobalRect,
+        widget.scrollDirection,
+        widget.isSinglePageView,
+        widget.textDirection,
+        widget.canShowHyperlinkDialog,
+        widget.enableHyperlinkNavigation,
+      );
       final Widget canvasContainer = Container(
           height: isRotatedTo90or270 ? widget.width : widget.height,
           width: isRotatedTo90or270 ? widget.height : widget.width,
           alignment: Alignment.topCenter,
-          child: PdfViewerCanvas(
-            _canvasKey,
-            isRotatedTo90or270 ? widget.width : widget.height,
-            isRotatedTo90or270 ? widget.height : widget.width,
-            widget.pdfDocument,
-            widget.pageIndex,
-            widget.pdfPages,
-            widget.interactionMode,
-            widget.pdfViewerController,
-            widget.enableDocumentLinkAnnotation,
-            widget.enableTextSelection,
-            widget.onTextSelectionChanged,
-            widget.onHyperlinkClicked,
-            widget.onTextSelectionDragStarted,
-            widget.onTextSelectionDragEnded,
-            widget.textCollection,
-            widget.currentSearchTextHighlightColor,
-            widget.otherSearchTextHighlightColor,
-            widget.pdfTextSearchResult,
-            widget.isMobileWebView,
-            widget.pdfScrollableStateKey,
-            widget.singlePageViewStateKey,
-            widget.viewportGlobalRect,
-            widget.scrollDirection,
-            widget.isSinglePageView,
-            widget.textDirection,
-            widget.canShowHyperlinkDialog,
-            widget.enableHyperlinkNavigation,
-          ));
+          child: pdfViewerCanvas);
       final Widget canvas = (kIsDesktop &&
               !widget.isMobileWebView &&
               canvasRenderBox != null)
@@ -371,10 +378,11 @@ class PdfPageViewState extends State<PdfPageView> {
                   if (widget.isSinglePageView &&
                       details is PointerScrollEvent) {
                     widget.singlePageViewStateKey.currentState?.jumpTo(
-                        yOffset: widget.pdfViewerController.scrollOffset.dy +
-                            (details.scrollDelta.dy.isNegative
-                                ? -_jumpOffset
-                                : _jumpOffset));
+                      yOffset: widget.pdfViewerController.scrollOffset.dy +
+                          (details.scrollDelta.dy.isNegative
+                              ? -_jumpOffset
+                              : _jumpOffset),
+                    );
                   }
                   canvasRenderBox!.updateContextMenuPosition();
                 },
@@ -404,13 +412,17 @@ class PdfPageViewState extends State<PdfPageView> {
                   focusNode.requestFocus();
                   widget.onPdfPagePointerMove(details);
                   if (widget.interactionMode == PdfInteractionMode.pan) {
-                    _cursor = SystemMouseCursors.grabbing;
+                    _cursor = readCon.textBoxMode.value
+                        ? SystemMouseCursors.text
+                        : SystemMouseCursors.basic;
                   }
                 },
                 onPointerUp: (PointerUpEvent details) {
                   widget.onPdfPagePointerUp(details);
                   if (widget.interactionMode == PdfInteractionMode.pan) {
-                    _cursor = SystemMouseCursors.grab;
+                    _cursor = readCon.textBoxMode.value
+                        ? SystemMouseCursors.text
+                        : SystemMouseCursors.basic;
                   }
                 },
                 child: RawKeyboardListener(
@@ -426,11 +438,13 @@ class PdfPageViewState extends State<PdfPageView> {
                                 .selectionEnabled) &&
                         isPrimaryKeyPressed &&
                         event.logicalKey == LogicalKeyboardKey.keyC) {
-                      Clipboard.setData(ClipboardData(
-                          text: canvasRenderBox!
-                                  .getSelectionDetails()
-                                  .copiedText ??
-                              ''));
+                      Clipboard.setData(
+                        ClipboardData(
+                            text: canvasRenderBox!
+                                    .getSelectionDetails()
+                                    .copiedText ??
+                                ''),
+                      );
                     }
                     if (isPrimaryKeyPressed &&
                         event.logicalKey == LogicalKeyboardKey.digit0) {
@@ -485,38 +499,47 @@ class PdfPageViewState extends State<PdfPageView> {
                   child: MouseRegion(
                     cursor: _cursor,
                     onHover: (PointerHoverEvent details) {
-                      setState(() {
-                        if (canvasRenderBox != null) {
-                          if (widget.interactionMode ==
-                              PdfInteractionMode.selection) {
-                            final bool isText = canvasRenderBox!
-                                    .findTextWhileHover(
-                                        details.localPosition) !=
-                                null;
-                            final bool isTOC =
-                                canvasRenderBox!.findTOC(details.localPosition);
-                            if (isTOC) {
-                              _cursor = SystemMouseCursors.click;
-                            } else if (isText && !isTOC) {
-                              if (isRotatedTo90or270) {
-                                _cursor = SystemMouseCursors.verticalText;
+                      setState(
+                        () {
+                          readCon.focusNode.requestFocus();
+                          if (canvasRenderBox != null) {
+                            if (widget.interactionMode ==
+                                PdfInteractionMode.selection) {
+                              final bool isText = canvasRenderBox!
+                                      .findTextWhileHover(
+                                          details.localPosition) !=
+                                  null;
+                              final bool isTOC = canvasRenderBox!
+                                  .findTOC(details.localPosition);
+                              if (isTOC) {
+                                _cursor = SystemMouseCursors.click;
+                              } else if (isText && !isTOC) {
+                                if (isRotatedTo90or270) {
+                                  _cursor = SystemMouseCursors.verticalText;
+                                } else {
+                                  _cursor = readCon.textBoxMode.value
+                                      ? SystemMouseCursors.text
+                                      : SystemMouseCursors.basic;
+                                }
                               } else {
-                                _cursor = SystemMouseCursors.text;
+                                _cursor = readCon.textBoxMode.value
+                                    ? SystemMouseCursors.text
+                                    : SystemMouseCursors.basic;
                               }
                             } else {
-                              _cursor = SystemMouseCursors.basic;
-                            }
-                          } else {
-                            final bool isTOC =
-                                canvasRenderBox!.findTOC(details.localPosition);
-                            if (isTOC) {
-                              _cursor = SystemMouseCursors.click;
-                            } else if (_cursor != SystemMouseCursors.grab) {
-                              _cursor = SystemMouseCursors.grab;
+                              final bool isTOC = canvasRenderBox!
+                                  .findTOC(details.localPosition);
+                              if (isTOC) {
+                                _cursor = SystemMouseCursors.click;
+                              } else if (_cursor != SystemMouseCursors.grab) {
+                                _cursor = readCon.textBoxMode.value
+                                    ? SystemMouseCursors.text
+                                    : SystemMouseCursors.basic;
+                              }
                             }
                           }
-                        }
-                      });
+                        },
+                      );
                     },
                     child: canvasContainer,
                   ),
@@ -557,14 +580,19 @@ class PdfPageViewState extends State<PdfPageView> {
                             canvasRenderBox!.scroll(false, false);
                           }
                         },
-                        child: canvasContainer)
+                        child: canvasContainer,
+                      )
                     : canvasContainer,
               ),
             );
+      // stack for the pdf viewer screen
       return Stack(
-        children: <Widget>[
+        children: [
           pdfPage,
+          // note: can add here but will reflect on everywhere
           canvas,
+          // wrapper to contain the annotations per page
+          // ...readCon.annotationsList,
         ],
       );
     } else {

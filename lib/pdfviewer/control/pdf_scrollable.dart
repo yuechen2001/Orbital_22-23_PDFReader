@@ -314,6 +314,8 @@ class PdfScrollableState extends State<PdfScrollable> {
   void receivedPointerSignal(PointerSignalEvent event) {
     isScrolled = true;
     if (event is PointerScrollEvent) {
+      // TODO: 
+      // print('scrolling2');
       jumpTo(
           xOffset: currentOffset.dx + event.scrollDelta.dx,
           yOffset: currentOffset.dy + event.scrollDelta.dy);
