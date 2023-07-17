@@ -7,10 +7,17 @@ class ReaderController extends GetxController {
   RxBool textBoxMode = false.obs;
   List<PdfPageViewWithAnnotations> children = [];
   List<RxList> annotationsList = [];
-  FocusNode focusNode = FocusNode();
+  RxDouble maxX = (0.0).obs;
+  RxDouble maxY = (0.0).obs;
+  RxDouble currentFontSize = (12.0).obs;
+  Rx<Color> currentColor = (Colors.black).obs;
+
+  void updateMaxLocalBounds(double x, double y) {
+    maxX.value = x;
+    maxY.value = y;
+  }
 
   void addChildren(List<Widget> c) {
-    // print(c.length);
     if (children.length != 0) {
       return;
     }
@@ -20,16 +27,38 @@ class ReaderController extends GetxController {
     }
   }
 
-  void updateSelectedTextbox(FocusNode f) {
-    focusNode = f;
-  }
-
   void clearPages() {
     children = [];
+    annotationsList = [];
+    maxX = (0.0).obs;
+    maxY = (0.0).obs;
   }
 
   void updateBackgroundcolour(String selectedValue) {
     backgroundColour.value = selectedValue;
+    updateTextboxColour();
+    // refreshAllAnnotations();
+    print('refreshed');
+    // update();
+  }
+
+  void updateTextboxColour() {
+    // case where white
+    if (backgroundColour.value == "White") {
+      currentColor.value = Colors.black;
+    } else if (backgroundColour.value == "Dark") {
+      // case where dark
+      currentColor.value = Colors.white70;
+    } else {
+      // case where sepia
+      currentColor.value = Colors.black;
+    }
+  }
+
+  void refreshAllAnnotations() {
+    for (RxList l in annotationsList) {
+      l.refresh();
+    }
   }
 
   @override

@@ -1,7 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:pdfreader2/constants/widgets/textbox_widget.dart';
 import 'package:pdfreader2/controllers/reader_controller.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
 import 'package:syncfusion_flutter_pdf/pdf.dart';
@@ -15,6 +14,7 @@ import 'pdf_scrollable.dart';
 import 'pdfviewer_canvas.dart';
 import 'single_page_view.dart';
 import 'package:get/get.dart';
+import 'package:pdfreader2/constants/widgets/textbox_widget.dart';
 
 /// Wrapper class of [Image] widget which shows the PDF pages as an image
 class PdfPageView extends StatefulWidget {
@@ -501,7 +501,6 @@ class PdfPageViewState extends State<PdfPageView> {
                     onHover: (PointerHoverEvent details) {
                       setState(
                         () {
-                          readCon.focusNode.requestFocus();
                           if (canvasRenderBox != null) {
                             if (widget.interactionMode ==
                                 PdfInteractionMode.selection) {
@@ -590,7 +589,26 @@ class PdfPageViewState extends State<PdfPageView> {
         children: [
           pdfPage,
           // note: can add here but will reflect on everywhere
-          canvas,
+          GestureDetector(
+            onTapDown: (details) {
+              Offset lp = details.localPosition;
+              if (readCon.textBoxMode.value) {
+                // change textBoxMode to false to prevent the user from
+                // needlessly spamming textboxes
+                readCon.textBoxMode.value = false;
+                // add annotation to the selected page
+                readCon.children[widget.pageIndex].updateAnnotations(
+                  TextboxWidget(
+                    key: UniqueKey(),
+                    x: lp.dx,
+                    y: lp.dy,
+                    page: widget.pageIndex,
+                  ),
+                );
+              }
+            },
+            child: canvas,
+          ),
           // wrapper to contain the annotations per page
           // ...readCon.annotationsList,
         ],

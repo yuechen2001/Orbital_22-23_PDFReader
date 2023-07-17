@@ -39,7 +39,6 @@ import 'control/pdf_scrollable.dart';
 import 'control/pdftextline.dart';
 import 'control/pdfviewer_callback_details.dart';
 import 'control/single_page_view.dart';
-import 'package:pdfreader2/constants/widgets/textbox_widget.dart';
 import 'package:pdfreader2/controllers/reader_controller.dart';
 import 'package:get/get.dart';
 import 'package:pdfreader2/constants/widgets/pdf_page_view_with_annotations.dart';
@@ -1977,10 +1976,6 @@ class SfPdfViewerState extends State<SfPdfViewer> with WidgetsBindingObserver {
     return viewportGlobalRect;
   }
 
-  // TODO: see how the viewer changes state on scroll
-  // goal: different canvas for different page => display diff textboxes
-  // look into: how scrolling works here
-  // context: surface layer of the pdf viewerxsz
   @override
   Widget build(BuildContext context) {
     final Container emptyContainer = Container(
@@ -2270,16 +2265,7 @@ class SfPdfViewerState extends State<SfPdfViewer> with WidgetsBindingObserver {
                         if (page.imageStream != null) {
                           _renderedImages.add(pageIndex);
                         }
-                        // TODO: REPLACE THIS WITH THE CUSTOM CONSTRUCTOR
-                        // return Stack(
-                        //   children: [
-                        //     page,
-                        //     TextboxWidget(x: 0.0, y: 0.0),
-                        //   ],
-                        // );
-                        // print('rebuilt');
                         return PdfPageViewWithAnnotations(
-                          key: GlobalKey(),
                           page: page,
                           pageIndex: pageIndex - 1,
                         );
@@ -2436,8 +2422,6 @@ class SfPdfViewerState extends State<SfPdfViewer> with WidgetsBindingObserver {
                       ],
                     );
                   }
-                  // add the children to stack to retrieve and update
-
                   // if have error
                   else if (snapshot.hasError) {
                     return emptyContainer;
