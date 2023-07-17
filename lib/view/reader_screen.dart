@@ -18,7 +18,13 @@ class ReaderScreen extends StatefulWidget {
 }
 
 class _ReaderScreenState extends State<ReaderScreen> {
-  ReaderController readCon = Get.put(ReaderController());
+  ReaderController readCon = Get.put<ReaderController>(ReaderController());
+
+  @override
+  void initState() {
+    super.initState();
+    readCon.setDoc(widget.doc);
+  }
 
   @override
   void dispose() {
@@ -120,6 +126,8 @@ class SideBar extends State<_SideBar> {
             height: 50.0,
             child: TextButton.icon(
               onPressed: () {
+                // TODO: SAVE THE ANNOTATIONS, IF ANY
+                readCon.saveAnnotations();
                 readCon.clearPages();
                 Get.back();
               },
@@ -198,6 +206,7 @@ class TopMenuBar extends State<_TopMenuBar> {
           children: [
             TextButton.icon(
               onPressed: () {
+                readCon.saveAnnotations();
                 docCon.removeMissingDocuments();
                 Get.back();
               },

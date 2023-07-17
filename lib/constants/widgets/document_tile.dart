@@ -76,6 +76,7 @@ class _DocumentTileState extends State<DocumentTile> {
           // case where the document exists in the user's local filesystem
           Document openedDoc =
               docCon.updateLastOpened(docTitle: widget.doc.docTitle);
+          // create a new readerscreen to open the document for viewing
           Get.to(ReaderScreen(doc: openedDoc));
         }
       },

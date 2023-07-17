@@ -14,9 +14,11 @@ class Document extends HiveObject {
   DateTime lastOpened;
   @HiveField(4)
   bool favourited;
+  @HiveField(5)
+  List<List<dynamic>> annotations;
 
   Document(this.docTitle, this.docPath, this.docDate, this.lastOpened,
-      this.favourited);
+      this.favourited, this.annotations);
 
   // check whether two documents are equal to each other
   @override

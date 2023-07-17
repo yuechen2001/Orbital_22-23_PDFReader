@@ -12,8 +12,6 @@ class PdfPageViewWithAnnotations extends StatefulWidget {
   int pageIndex;
   // pull out the readercontroller
   ReaderController readCon = Get.find<ReaderController>();
-  // renderbox
-  late RenderBox rb;
 
   // function to update the annotations list
   void updateAnnotations(Widget w) {
@@ -27,18 +25,6 @@ class PdfPageViewWithAnnotations extends StatefulWidget {
 
 class PdfPageViewWithAnnotationsState
     extends State<PdfPageViewWithAnnotations> {
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      initMaxOffset();
-    });
-  }
-
-  void initMaxOffset() {
-    widget.rb = context.findRenderObject() as RenderBox;
-    widget.readCon.updateMaxLocalBounds(widget.rb.size.width, widget.rb.size.height);
-  }
 
   @override
   Widget build(BuildContext context) {

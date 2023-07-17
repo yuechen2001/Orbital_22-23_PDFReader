@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pdfreader2/constants/widgets/pdf_page_view_with_annotations.dart';
+import 'package:pdfreader2/models/document_model.dart';
 
 class ReaderController extends GetxController {
   RxString backgroundColour = "White".obs;
@@ -11,6 +12,7 @@ class ReaderController extends GetxController {
   RxDouble maxY = (0.0).obs;
   RxDouble currentFontSize = (12.0).obs;
   Rx<Color> currentColor = (Colors.black).obs;
+  late Document doc;
 
   void updateMaxLocalBounds(double x, double y) {
     maxX.value = x;
@@ -18,28 +20,27 @@ class ReaderController extends GetxController {
   }
 
   void addChildren(List<Widget> c) {
-    if (children.length != 0) {
+    if (children.isNotEmpty) {
       return;
     }
     for (Widget child in c) {
       children.add(child as PdfPageViewWithAnnotations);
-      annotationsList.add([].obs);
+    }
+    if (annotationsList.isEmpty) {
+      for (int i = 0; i < children.length; i++) {
+        annotationsList.add([].obs);
+      }
     }
   }
 
   void clearPages() {
     children = [];
     annotationsList = [];
-    maxX = (0.0).obs;
-    maxY = (0.0).obs;
   }
 
   void updateBackgroundcolour(String selectedValue) {
     backgroundColour.value = selectedValue;
     updateTextboxColour();
-    // refreshAllAnnotations();
-    print('refreshed');
-    // update();
   }
 
   void updateTextboxColour() {
@@ -59,6 +60,27 @@ class ReaderController extends GetxController {
     for (RxList l in annotationsList) {
       l.refresh();
     }
+  }
+
+  void setDoc(Document doc) {
+    this.doc = doc;
+    setAnnotations();
+  }
+
+  void setAnnotations() {
+    annotationsList = [];
+    for (int i = 0; i < doc.annotations.length; i++) {
+      RxList<dynamic> t = [...doc.annotations[i]].obs;
+      annotationsList.add(t);
+    }
+  }
+
+  void saveAnnotations() {
+    doc.annotations = [];
+    for (int i = 0; i < annotationsList.length; i++) {
+      doc.annotations.add([...annotationsList[i]]);
+    }
+    clearPages();
   }
 
   @override

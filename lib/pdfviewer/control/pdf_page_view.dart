@@ -199,11 +199,20 @@ class PdfPageViewState extends State<PdfPageView> {
     _cursor = readCon.textBoxMode.value
         ? SystemMouseCursors.text
         : SystemMouseCursors.basic;
+    WidgetsBinding.instance.addPostFrameCallback(
+      (_) {
+        RenderBox rb = context.findRenderObject() as RenderBox;
+        readCon.maxX.value = rb.size.width;
+        readCon.maxY.value = rb.size.height;
+      },
+    );
     if (kIsDesktop && !widget.isMobileWebView) {
       helper.preventDefaultMenu();
-      focusNode.addListener(() {
-        helper.hasPrimaryFocus = focusNode.hasFocus;
-      });
+      focusNode.addListener(
+        () {
+          helper.hasPrimaryFocus = focusNode.hasFocus;
+        },
+      );
     }
     super.initState();
   }
@@ -609,8 +618,6 @@ class PdfPageViewState extends State<PdfPageView> {
             },
             child: canvas,
           ),
-          // wrapper to contain the annotations per page
-          // ...readCon.annotationsList,
         ],
       );
     } else {

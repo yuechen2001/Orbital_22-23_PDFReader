@@ -7,12 +7,14 @@ import 'package:hive/hive.dart';
 import 'package:window_manager/window_manager.dart';
 
 import 'models/document_model.dart';
+import 'constants/widgets/textbox_widget.dart';
 
 final List<Box> boxes = [];
 
 // Function to register all Hive Models that we are using in our application
 void _registerAdapter() {
   Hive.registerAdapter<Document>(DocumentAdapter());
+  Hive.registerAdapter<TextboxWidget>(TextboxWidgetAdapter());
 }
 
 // Establish connection to Hive

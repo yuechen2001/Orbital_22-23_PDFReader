@@ -23,9 +23,13 @@ class DocumentController extends GetxController {
     if (picked != null) {
       DateTime now = DateTime.now();
       String formattedDate = DateFormat('EEEE, MMM d, yyyy').format(now);
+      // get the annotations list if doc exists, else set as null
+      List<List<dynamic>> l = recentFiles.containsKey(picked.name)
+          ? recentFiles.get(picked.name)!.annotations
+          : [];
       // convert the file to a document object
       Document doc =
-          Document(picked.name, picked.path!, formattedDate, now, false);
+          Document(picked.name, picked.path!, formattedDate, now, false, l);
       recentFiles.put(picked.name, doc);
       return doc;
     } else {
@@ -56,8 +60,8 @@ class DocumentController extends GetxController {
     String formattedDate = DateFormat('EEEE, MMM d, yyyy').format(now);
 
     // convert the file to a document object
-    Document doc = Document(
-        curr.docTitle, curr.docPath, formattedDate, now, curr.favourited);
+    Document doc = Document(curr.docTitle, curr.docPath, formattedDate, now,
+        curr.favourited, curr.annotations);
     recentFiles.put(doc.docTitle, doc);
 
     return doc;
