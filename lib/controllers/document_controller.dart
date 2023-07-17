@@ -52,7 +52,7 @@ class DocumentController extends GetxController {
     return file;
   }
 
-  Document updateLastOpened({required String docTitle}) {
+  Document updateLastOpened(String docTitle) {
     Document curr = recentFiles.get(docTitle)!;
 
     // update the last opened time
@@ -60,16 +60,33 @@ class DocumentController extends GetxController {
     String formattedDate = DateFormat('EEEE, MMM d, yyyy').format(now);
 
     // convert the file to a document object
-    Document doc = Document(curr.docTitle, curr.docPath, formattedDate, now,
-        curr.favourited, curr.annotations);
+    Document doc = Document(
+        docTitle: curr.docTitle,
+        docPath: curr.docPath,
+        docDate: formattedDate,
+        lastOpened: now,
+        favourited: curr.favourited,
+        annotations: curr.annotations,
+        folders: curr.folders);
     recentFiles.put(doc.docTitle, doc);
 
     return doc;
   }
 
-  void clearRecentFiles() {
-    recentFiles.clear();
-    update();
+  void addToFolder(String folderName, String docTitle) {
+    Document curr = recentFiles.get(docTitle)!;
+
+    // update the folder list
+    curr.folders.add(folderName);
+    recentFiles.put(docTitle, curr);
+  }
+
+  void removeFromFolder(String folderName, String docTitle) {
+    Document curr = recentFiles.get(docTitle)!;
+
+    // update the folder list
+    curr.folders.remove(folderName);
+    recentFiles.put(docTitle, curr);
   }
 
   // method that will loop over all the files in the db, deleting any files
@@ -85,6 +102,11 @@ class DocumentController extends GetxController {
         recentFiles.delete(file.key);
       }
     }
+  }
+
+  void clearRecentFiles() {
+    recentFiles.clear();
+    update();
   }
 
   @override

@@ -14,7 +14,7 @@ import 'pdf_scrollable.dart';
 import 'pdfviewer_canvas.dart';
 import 'single_page_view.dart';
 import 'package:get/get.dart';
-import 'package:pdfreader2/constants/widgets/textbox_widget.dart';
+import 'package:pdfreader2/widgets/annotations/textbox.dart';
 
 /// Wrapper class of [Image] widget which shows the PDF pages as an image
 class PdfPageView extends StatefulWidget {

@@ -1,6 +1,7 @@
 import 'package:hive/hive.dart';
 
-part 'hiveModels/document_model.g.dart';
+// TODO: REFRESH DB 
+part 'document_model.g.dart';
 
 @HiveType(typeId: 0)
 class Document extends HiveObject {
@@ -16,9 +17,17 @@ class Document extends HiveObject {
   bool favourited;
   @HiveField(5)
   List<List<dynamic>> annotations;
+  @HiveField(6)
+  List<String> folders;
 
-  Document(this.docTitle, this.docPath, this.docDate, this.lastOpened,
-      this.favourited, this.annotations);
+  Document(
+      {required this.docTitle,
+      required this.docPath,
+      required this.docDate,
+      required this.lastOpened,
+      required this.favourited,
+      required this.annotations,
+      required this.folders});
 
   // check whether two documents are equal to each other
   @override
