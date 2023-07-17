@@ -6,7 +6,7 @@ import 'package:pdfreader2/controllers/favourite_controller.dart';
 
 import '../../controllers/document_controller.dart';
 import '../../models/document_model.dart';
-import '../../view/reader_screen.dart';
+import '../../view/reader/reader_screen.dart';
 
 class DocumentTile extends StatefulWidget {
   const DocumentTile(

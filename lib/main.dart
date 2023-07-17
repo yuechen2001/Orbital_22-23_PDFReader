@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:pdfreader2/view/home_screen.dart';
+import 'package:pdfreader2/view/home/home_screen.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 import 'package:window_manager/window_manager.dart';

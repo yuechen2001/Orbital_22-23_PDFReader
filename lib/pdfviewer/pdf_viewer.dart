@@ -41,7 +41,7 @@ import 'control/pdfviewer_callback_details.dart';
 import 'control/single_page_view.dart';
 import 'package:pdfreader2/controllers/reader_controller.dart';
 import 'package:get/get.dart';
-import 'package:pdfreader2/constants/widgets/pdf_page_view_with_annotations.dart';
+import 'package:pdfreader2/view/reader/pdf_with_annotations.dart';
 
 /// Signature for [SfPdfViewer.onTextSelectionChanged] callback.
 typedef PdfTextSelectionChangedCallback = void Function(

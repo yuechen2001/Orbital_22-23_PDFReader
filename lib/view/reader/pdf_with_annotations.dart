@@ -37,7 +37,8 @@ class PdfPageViewWithAnnotationsState
 
   void initMaxOffset() {
     widget.rb = context.findRenderObject() as RenderBox;
-    widget.readCon.updateMaxLocalBounds(widget.rb.size.width, widget.rb.size.height);
+    widget.readCon
+        .updateMaxLocalBounds(widget.rb.size.width, widget.rb.size.height);
   }
 
   @override

@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:pdfreader2/view/reader/drawing_page.dart';
 
-import '../../controllers/document_controller.dart';
-import '../../models/document_model.dart';
-import '../../view/favourites_screen.dart';
-import '../../view/folders_screen.dart';
-import '../../view/home_screen.dart';
-import '../../view/reader_screen.dart';
+import '../controllers/document_controller.dart';
+import '../models/document_model.dart';
+import '../view/home/favourites_screen.dart';
+import '../view/home/folders_screen.dart';
+import '../view/home/home_screen.dart';
+import '../view/reader/reader_screen.dart';
 
 class SideNavigationBar extends StatelessWidget {
   SideNavigationBar({super.key, required this.currentPage});
@@ -98,6 +99,24 @@ class SideNavigationBar extends StatelessWidget {
             onTap: () {
               if (currentPage != "Folders") {
                 Get.offAll(const FoldersScreen());
+              }
+            },
+          ),
+          ListTile(
+            title: Transform.translate(
+              offset: const Offset(-20, 0),
+              child: const Text(
+                'Drawing',
+                style: TextStyle(color: Colors.white70),
+              ),
+            ),
+            leading: const Icon(
+              Icons.folder_rounded,
+              color: Colors.white70,
+            ),
+            onTap: () {
+              if (currentPage != "Folders") {
+                Get.offAll(const DrawingPage());
               }
             },
           ),

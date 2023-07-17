@@ -4,9 +4,9 @@ import 'package:pdfreader2/controllers/folders_controller.dart';
 
 import 'package:flutter/material.dart';
 
-import '../constants/widgets/folder_tile.dart';
-import '../constants/widgets/side_navigation_bar.dart';
-import '../controllers/document_controller.dart';
+import '../../widgets/side_navigation_bar.dart';
+import '../../widgets/tiles/folder_tile.dart';
+import '../../controllers/document_controller.dart';
 
 class FoldersScreen extends StatefulWidget {
   const FoldersScreen({Key? key}) : super(key: key);
