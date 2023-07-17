@@ -3,11 +3,10 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:pdfreader2/controllers/folders_controller.dart';
 
 import 'package:flutter/material.dart';
-
-import '../constants/widgets/document_tile.dart';
-import '../constants/widgets/folder_document_tile.dart';
-import '../controllers/document_controller.dart';
-import '../models/document_model.dart';
+import '../../widgets/tiles/document_tile.dart';
+import '../../widgets/tiles/folder_document_tile.dart';
+import '../../controllers/document_controller.dart';
+import '../../models/document_model.dart';
 
 class IndividualFolderScreen extends StatefulWidget {
   const IndividualFolderScreen({Key? key, required this.currentFolder})

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pdfreader2/controllers/folders_controller.dart';
-import 'package:pdfreader2/view/individual_folder_screen.dart';
+import 'package:pdfreader2/view/home/individual_folder_screen.dart';
 
 import '../../controllers/document_controller.dart';
 

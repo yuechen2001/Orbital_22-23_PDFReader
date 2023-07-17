@@ -1,32 +1,25 @@
 import 'package:get/get.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:pdfreader2/models/document_model.dart';
 
 import 'package:flutter/material.dart';
-import '../constants/widgets/document_tile.dart';
-import '../constants/widgets/side_navigation_bar.dart';
-import '../controllers/document_controller.dart';
-import '../models/document_model.dart';
 
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+import '../../widgets/side_navigation_bar.dart';
+import '../../widgets/tiles/document_tile.dart';
+import '../../controllers/document_controller.dart';
+
+class FavouritesScreen extends StatefulWidget {
+  const FavouritesScreen({super.key});
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  State<FavouritesScreen> createState() => _FavouritesScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _FavouritesScreenState extends State<FavouritesScreen> {
   final DocumentController docCon = Get.find<DocumentController>();
 
   @override
-  void initState() {
-    docCon.removeMissingDocuments();
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    // every time the home screen is rebuilt, check if any of the files
-    // in the recent files list has been deleted. if true, update the db
     return Scaffold(
         body: Row(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -50,7 +43,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       onPressed: () {
                         // todo: add logic for toggling the buttons
                         if (Scaffold.of(context).isDrawerOpen) {
-                          // if drawer opeRned
+                          // if drawer opened
                           // close the drawer
                           Scaffold.of(context).closeDrawer();
                           // todo: change button orientation to face right
@@ -78,12 +71,13 @@ class _HomeScreenState extends State<HomeScreen> {
                     children: [
                       const Column(
                         children: [
-                          Text("Welcome",
+                          Text("Favourites",
                               style: TextStyle(
                                   fontSize: 40.0,
                                   fontWeight: FontWeight.bold,
                                   color: Colors.white70)),
-                          Text("How can I help you today?",
+                          Text(
+                              "All your most important documents in one place.",
                               style: TextStyle(
                                   fontSize: 30.0,
                                   fontWeight: FontWeight.bold,
@@ -92,17 +86,22 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                       const Padding(
                         padding: EdgeInsets.fromLTRB(0.0, 12.0, 0.0, 12.0),
-                        child: Text("Recent Files",
+                        child: Text("Favourited Files",
                             style: TextStyle(
                                 fontSize: 20.0,
                                 fontWeight: FontWeight.bold,
                                 color: Colors.white70)),
                       ),
                       const Divider(color: Colors.white),
-                      ValueListenableBuilder<Box<Document>>(
+                      ValueListenableBuilder(
                         valueListenable: docCon.recentFiles.listenable(),
-                        builder: (context, box, _) {
-                          if (box.values.isEmpty) {
+                        builder: (context, Box<Document> box, _) {
+                          final sorted = box.values
+                              .where((doc) => doc.favourited)
+                              .toList()
+                            ..sort(
+                                (a, b) => b.lastOpened.compareTo(a.lastOpened));
+                          if (sorted.isEmpty) {
                             return const Center(
                               child: Text("No Documents Found.",
                                   style: TextStyle(
@@ -110,26 +109,24 @@ class _HomeScreenState extends State<HomeScreen> {
                                   ),
                                   overflow: TextOverflow.ellipsis),
                             );
+                          } else {
+                            return ListView.separated(
+                              scrollDirection: Axis.vertical,
+                              shrinkWrap: true,
+                              itemCount: sorted.length,
+                              itemBuilder: (context, index) {
+                                Document doc = sorted[index];
+                                return DocumentTile(
+                                  doc: doc,
+                                  canDelete: false,
+                                );
+                              },
+                              separatorBuilder:
+                                  (BuildContext context, int index) {
+                                return const Divider(color: Colors.white10);
+                              },
+                            );
                           }
-                          final sorted = box.values.toList()
-                            ..sort(
-                                (a, b) => b.lastOpened.compareTo(a.lastOpened));
-                          return ListView.separated(
-                            scrollDirection: Axis.vertical,
-                            shrinkWrap: true,
-                            itemCount: sorted.length,
-                            itemBuilder: (context, index) {
-                              Document doc = sorted.elementAt(index);
-                              return DocumentTile(
-                                doc: doc,
-                                canDelete: false,
-                              );
-                            },
-                            separatorBuilder:
-                                (BuildContext context, int index) {
-                              return const Divider(color: Colors.white10);
-                            },
-                          );
                         },
                       ),
                     ],
@@ -139,6 +136,6 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ],
         ),
-        drawer: SideNavigationBar(currentPage: "Home"));
+        drawer: SideNavigationBar(currentPage: "Favourites"));
   }
 }
