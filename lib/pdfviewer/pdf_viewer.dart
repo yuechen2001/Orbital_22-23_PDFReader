@@ -39,6 +39,9 @@ import 'control/pdf_scrollable.dart';
 import 'control/pdftextline.dart';
 import 'control/pdfviewer_callback_details.dart';
 import 'control/single_page_view.dart';
+import 'package:pdfreader2/controllers/reader_controller.dart';
+import 'package:get/get.dart';
+import 'package:pdfreader2/constants/widgets/pdf_page_view_with_annotations.dart';
 
 /// Signature for [SfPdfViewer.onTextSelectionChanged] callback.
 typedef PdfTextSelectionChangedCallback = void Function(
@@ -968,6 +971,8 @@ class SfPdfViewerState extends State<SfPdfViewer> with WidgetsBindingObserver {
   Isolate? _textExtractionIsolate;
   bool _isTablet = false;
   bool _isAndroidTV = false;
+  // get the reader controller
+  ReaderController readCon = Get.find<ReaderController>();
 
   /// PdfViewer theme data.
   SfPdfViewerThemeData? _pdfViewerThemeData;
@@ -2018,78 +2023,85 @@ class SfPdfViewerState extends State<SfPdfViewer> with WidgetsBindingObserver {
                       : const Color(0xFF303030)),
               // ignore: always_specify_types
               child: FutureBuilder(
-                  future: _getImages(),
-                  builder:
-                      (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-                    if (snapshot.hasData) {
-                      final dynamic pdfImages = snapshot.data;
-                      _renderedImages.clear();
-                      _textDirection = Directionality.of(context);
-                      _viewportConstraints = context
-                          .findRenderObject()!
-                          // ignore: invalid_use_of_protected_member, avoid_as
-                          .constraints as BoxConstraints;
-                      double totalHeight = 0.0;
-                      _isKeyPadRaised =
-                          WidgetsBinding.instance.window.viewInsets.bottom !=
-                              0.0;
-                      Size viewportDimension = _viewportConstraints.biggest;
-                      if (_isKeyPadRaised) {
-                        _iskeypadClosed = true;
-                        double keyPadHeight = EdgeInsets.fromWindowPadding(
-                                WidgetsBinding.instance.window.viewInsets,
-                                WidgetsBinding.instance.window.devicePixelRatio)
-                            .bottom;
-                        if ((widget.scrollDirection ==
-                                    PdfScrollDirection.horizontal ||
-                                widget.pageLayoutMode ==
-                                    PdfPageLayoutMode.single) &&
-                            keyPadHeight > 0) {
-                          if (viewportDimension.height + keyPadHeight !=
-                              _viewportHeight) {
-                            keyPadHeight =
-                                _viewportHeight - viewportDimension.height;
-                          } else {
-                            _viewportHeight =
-                                viewportDimension.height + keyPadHeight;
-                          }
+                future: _getImages(),
+                builder:
+                    (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+                  // case where have data
+                  if (snapshot.hasData) {
+                    // retrieve data from the _getImages() function
+                    final dynamic pdfImages = snapshot.data;
+                    // do admin work here
+                    _renderedImages.clear();
+                    _textDirection = Directionality.of(context);
+                    _viewportConstraints = context
+                        .findRenderObject()!
+                        // ignore: invalid_use_of_protected_member, avoid_as
+                        .constraints as BoxConstraints;
+                    double totalHeight = 0.0;
+                    _isKeyPadRaised =
+                        WidgetsBinding.instance.window.viewInsets.bottom != 0.0;
+                    Size viewportDimension = _viewportConstraints.biggest;
+                    if (_isKeyPadRaised) {
+                      _iskeypadClosed = true;
+                      double keyPadHeight = EdgeInsets.fromWindowPadding(
+                              WidgetsBinding.instance.window.viewInsets,
+                              WidgetsBinding.instance.window.devicePixelRatio)
+                          .bottom;
+                      if ((widget.scrollDirection ==
+                                  PdfScrollDirection.horizontal ||
+                              widget.pageLayoutMode ==
+                                  PdfPageLayoutMode.single) &&
+                          keyPadHeight > 0) {
+                        if (viewportDimension.height + keyPadHeight !=
+                            _viewportHeight) {
+                          keyPadHeight =
+                              _viewportHeight - viewportDimension.height;
+                        } else {
+                          _viewportHeight =
+                              viewportDimension.height + keyPadHeight;
                         }
+                      }
 
-                        viewportDimension = Size(viewportDimension.width,
-                            viewportDimension.height + keyPadHeight);
+                      viewportDimension = Size(viewportDimension.width,
+                          viewportDimension.height + keyPadHeight);
+                    } else {
+                      if (_iskeypadClosed) {
+                        viewportDimension =
+                            Size(viewportDimension.width, _viewportHeight);
+                        _iskeypadClosed = false;
                       } else {
-                        if (_iskeypadClosed) {
-                          viewportDimension =
-                              Size(viewportDimension.width, _viewportHeight);
-                          _iskeypadClosed = false;
-                        } else {
-                          _viewportHeight = viewportDimension.height;
-                        }
+                        _viewportHeight = viewportDimension.height;
                       }
-                      if (!isBookmarkViewOpen) {
-                        _otherContextHeight ??=
-                            MediaQuery.of(context).size.height -
-                                _viewportConstraints.maxHeight;
+                    }
+                    if (!isBookmarkViewOpen) {
+                      _otherContextHeight ??=
+                          MediaQuery.of(context).size.height -
+                              _viewportConstraints.maxHeight;
+                    }
+                    if (_deviceOrientation == Orientation.landscape) {
+                      _viewportHeightInLandscape ??=
+                          MediaQuery.of(context).size.height -
+                              _otherContextHeight!;
+                    }
+                    if (!_pdfDimension.isEmpty) {
+                      if (_scrollDirection == PdfScrollDirection.vertical) {
+                        _maxScrollExtent = _pdfDimension.height -
+                            (viewportDimension.height /
+                                _pdfViewerController.zoomLevel);
+                      } else {
+                        _maxScrollExtent = _pdfDimension.width -
+                            (viewportDimension.width /
+                                _pdfViewerController.zoomLevel);
                       }
-                      if (_deviceOrientation == Orientation.landscape) {
-                        _viewportHeightInLandscape ??=
-                            MediaQuery.of(context).size.height -
-                                _otherContextHeight!;
-                      }
-                      if (!_pdfDimension.isEmpty) {
-                        if (_scrollDirection == PdfScrollDirection.vertical) {
-                          _maxScrollExtent = _pdfDimension.height -
-                              (viewportDimension.height /
-                                  _pdfViewerController.zoomLevel);
-                        } else {
-                          _maxScrollExtent = _pdfDimension.width -
-                              (viewportDimension.width /
-                                  _pdfViewerController.zoomLevel);
-                        }
-                      }
-                      Widget child;
-                      final List<Widget> children = List<Widget>.generate(
-                          _pdfViewerController.pageCount, (int index) {
+                    }
+
+                    // create the list of children
+                    Widget child;
+                    final List<Widget> children = List<Widget>.generate(
+                      // total count of pages needed
+                      _pdfViewerController.pageCount,
+                      // generator method
+                      (int index) {
                         if (index == 0) {
                           totalHeight = 0;
                         }
@@ -2234,169 +2246,192 @@ class SfPdfViewerState extends State<SfPdfViewer> with WidgetsBindingObserver {
                           if (kIsWeb ||
                               !Platform.environment
                                   .containsKey('FLUTTER_TEST')) {
-                            Future<dynamic>.delayed(Duration.zero, () async {
-                              _clearSelection();
-                              _pdfPagesKey[_pdfViewerController.pageNumber]
-                                  ?.currentState
-                                  ?.canvasRenderBox
-                                  ?.disposeMouseSelection();
-                              _pdfPagesKey[_pdfViewerController.pageNumber]
-                                  ?.currentState
-                                  ?.focusNode
-                                  .requestFocus();
-                            });
+                            Future<dynamic>.delayed(
+                              Duration.zero,
+                              () async {
+                                _clearSelection();
+                                _pdfPagesKey[_pdfViewerController.pageNumber]
+                                    ?.currentState
+                                    ?.canvasRenderBox
+                                    ?.disposeMouseSelection();
+                                _pdfPagesKey[_pdfViewerController.pageNumber]
+                                    ?.currentState
+                                    ?.focusNode
+                                    .requestFocus();
+                              },
+                            );
                           }
                         }
                         if (page.imageStream != null) {
                           _renderedImages.add(pageIndex);
                         }
-                        return page;
-                      });
-                      Widget? pdfContainer;
-                      if (widget.pageLayoutMode == PdfPageLayoutMode.single) {
-                        _pageController = PageController(
-                            initialPage: _pdfViewerController.pageNumber - 1);
-                        pdfContainer = MouseRegion(
-                          cursor: _cursor,
-                          onHover: (PointerHoverEvent details) {
-                            setState(() {
+                        return PdfPageViewWithAnnotations(
+                          page: page,
+                          pageIndex: pageIndex - 1,
+                        );
+                      },
+                    );
+                    readCon.addChildren(children);
+
+                    // set up widgets
+                    Widget? pdfContainer;
+                    if (widget.pageLayoutMode == PdfPageLayoutMode.single) {
+                      _pageController = PageController(
+                          initialPage: _pdfViewerController.pageNumber - 1);
+                      pdfContainer = MouseRegion(
+                        cursor: _cursor,
+                        onHover: (PointerHoverEvent details) {
+                          setState(
+                            () {
                               if (widget.interactionMode ==
                                   PdfInteractionMode.pan) {
                                 _cursor = SystemMouseCursors.grab;
                               } else {
                                 _cursor = SystemMouseCursors.basic;
                               }
-                            });
-                          },
-                          child: SinglePageView(
-                              _singlePageViewKey,
-                              _pdfViewerController,
-                              _pageController,
-                              _handleSinglePageViewPageChanged,
-                              _interactionUpdate,
-                              viewportDimension,
-                              widget.maxZoomLevel,
-                              widget.canShowPaginationDialog,
-                              widget.canShowScrollHead,
-                              widget.canShowScrollStatus,
-                              _pdfPages,
-                              _isMobileView,
-                              widget.enableDoubleTapZooming,
-                              widget.interactionMode,
-                              _isScaleEnabled,
-                              _handleSinglePageViewZoomLevelChanged,
-                              _handleDoubleTap,
-                              _handlePdfOffsetChanged,
-                              isBookmarkViewOpen,
-                              _textDirection,
-                              _isTablet,
-                              children),
-                        );
-                        if (_isSinglePageViewPageChanged &&
-                            _renderedImages
-                                .contains(_pdfViewerController.pageNumber)) {
-                          Future<dynamic>.delayed(Duration.zero, () async {
-                            if (_pageController.hasClients) {
-                              _pdfViewerController._scrollPositionX =
-                                  _pageController.offset;
-                            }
-                            if (!_isSearchStarted) {
-                              _pdfPagesKey[_pdfViewerController.pageNumber]
-                                  ?.currentState
-                                  ?.focusNode
-                                  .requestFocus();
-                            }
-                            if (getSelectedTextLines().isNotEmpty &&
-                                getSelectedTextLines().first.pageNumber + 1 ==
-                                    _pdfViewerController.pageNumber) {
-                              _pdfPagesKey[_pdfViewerController.pageNumber]
-                                  ?.currentState
-                                  ?.canvasRenderBox
-                                  ?.updateContextMenuPosition();
-                            }
-                            _isSinglePageViewPageChanged = false;
-                          });
-                        }
-                      } else {
-                        final Size childSize = _getChildSize(viewportDimension);
-                        if (_scrollDirection == PdfScrollDirection.horizontal) {
-                          child = Row(
-                              key: _childKey,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: children);
-                        } else {
-                          child = Column(
-                              key: _childKey,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: children);
-                        }
-                        child = MouseRegion(
-                          cursor: _cursor,
-                          onHover: (PointerHoverEvent details) {
-                            setState(() {
-                              if (widget.interactionMode ==
-                                  PdfInteractionMode.pan) {
-                                _cursor = SystemMouseCursors.grab;
-                              } else {
-                                _cursor = SystemMouseCursors.basic;
-                              }
-                            });
-                          },
-                          child: SizedBox(
-                              height: childSize.height,
-                              width: childSize.width,
-                              child: child),
-                        );
-                        pdfContainer = PdfScrollable(
-                          widget.canShowPaginationDialog,
-                          widget.canShowScrollStatus,
-                          widget.canShowScrollHead,
-                          _pdfViewerController,
-                          _isMobileView,
-                          _pdfDimension,
-                          _totalImageSize,
-                          viewportDimension,
-                          _handlePdfOffsetChanged,
-                          _panEnabled,
-                          widget.maxZoomLevel,
-                          _minScale,
-                          widget.enableDoubleTapZooming,
-                          widget.interactionMode,
-                          _maxPdfPageWidth,
-                          _isScaleEnabled,
-                          _maxScrollExtent,
-                          _pdfPages,
-                          _scrollDirection,
-                          isBookmarkViewOpen,
-                          _textDirection,
-                          child,
-                          key: _pdfScrollableStateKey,
-                          onDoubleTap: _handleDoubleTap,
-                        );
-                        // Updates current offset when scrollDirection change occurs.
-                        if (_isScrollDirectionChange) {
-                          _pdfScrollableStateKey.currentState
-                              ?.forcePixels(_scrollDirectionSwitchOffset);
-                          _isScrollDirectionChange = false;
-                        }
-                      }
-                      return Stack(
-                        children: <Widget>[
-                          pdfContainer,
-                          BookmarkView(
-                              _bookmarkKey,
-                              _document,
-                              _pdfViewerController,
-                              _handleBookmarkViewChanged,
-                              _textDirection),
-                        ],
+                            },
+                          );
+                        },
+                        child: SinglePageView(
+                            _singlePageViewKey,
+                            _pdfViewerController,
+                            _pageController,
+                            _handleSinglePageViewPageChanged,
+                            _interactionUpdate,
+                            viewportDimension,
+                            widget.maxZoomLevel,
+                            widget.canShowPaginationDialog,
+                            widget.canShowScrollHead,
+                            widget.canShowScrollStatus,
+                            _pdfPages,
+                            _isMobileView,
+                            widget.enableDoubleTapZooming,
+                            widget.interactionMode,
+                            _isScaleEnabled,
+                            _handleSinglePageViewZoomLevelChanged,
+                            _handleDoubleTap,
+                            _handlePdfOffsetChanged,
+                            isBookmarkViewOpen,
+                            _textDirection,
+                            _isTablet,
+                            children),
                       );
-                    } else if (snapshot.hasError) {
-                      return emptyContainer;
+                      if (_isSinglePageViewPageChanged &&
+                          _renderedImages
+                              .contains(_pdfViewerController.pageNumber)) {
+                        Future<dynamic>.delayed(Duration.zero, () async {
+                          if (_pageController.hasClients) {
+                            _pdfViewerController._scrollPositionX =
+                                _pageController.offset;
+                          }
+                          if (!_isSearchStarted) {
+                            _pdfPagesKey[_pdfViewerController.pageNumber]
+                                ?.currentState
+                                ?.focusNode
+                                .requestFocus();
+                          }
+                          if (getSelectedTextLines().isNotEmpty &&
+                              getSelectedTextLines().first.pageNumber + 1 ==
+                                  _pdfViewerController.pageNumber) {
+                            _pdfPagesKey[_pdfViewerController.pageNumber]
+                                ?.currentState
+                                ?.canvasRenderBox
+                                ?.updateContextMenuPosition();
+                          }
+                          _isSinglePageViewPageChanged = false;
+                        });
+                      }
                     } else {
-                      return emptyLinearProgressView;
+                      final Size childSize = _getChildSize(viewportDimension);
+                      if (_scrollDirection == PdfScrollDirection.horizontal) {
+                        child = Row(
+                            key: _childKey,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: children);
+                      } else {
+                        child = Column(
+                            key: _childKey,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: children);
+                      }
+                      child = MouseRegion(
+                        cursor: _cursor,
+                        onHover: (PointerHoverEvent details) {
+                          setState(
+                            () {
+                              if (widget.interactionMode ==
+                                  PdfInteractionMode.pan) {
+                                _cursor = SystemMouseCursors.grab;
+                              } else {
+                                _cursor = SystemMouseCursors.basic;
+                              }
+                            },
+                          );
+                        },
+                        child: SizedBox(
+                          height: childSize.height,
+                          width: childSize.width,
+                          child: child,
+                        ),
+                      );
+                      pdfContainer = PdfScrollable(
+                        widget.canShowPaginationDialog,
+                        widget.canShowScrollStatus,
+                        widget.canShowScrollHead,
+                        _pdfViewerController,
+                        _isMobileView,
+                        _pdfDimension,
+                        _totalImageSize,
+                        viewportDimension,
+                        _handlePdfOffsetChanged,
+                        _panEnabled,
+                        widget.maxZoomLevel,
+                        _minScale,
+                        widget.enableDoubleTapZooming,
+                        widget.interactionMode,
+                        _maxPdfPageWidth,
+                        _isScaleEnabled,
+                        _maxScrollExtent,
+                        _pdfPages,
+                        _scrollDirection,
+                        isBookmarkViewOpen,
+                        _textDirection,
+                        child,
+                        key: _pdfScrollableStateKey,
+                        onDoubleTap: _handleDoubleTap,
+                      );
+                      // Updates current offset when scrollDirection change occurs.
+                      if (_isScrollDirectionChange) {
+                        _pdfScrollableStateKey.currentState
+                            ?.forcePixels(_scrollDirectionSwitchOffset);
+                        _isScrollDirectionChange = false;
+                      }
                     }
-                  }),
+                    // return the stack of widgets generated from the
+                    // previous step
+                    return Stack(
+                      children: <Widget>[
+                        // scrollable pdf viewer
+                        pdfContainer,
+                        BookmarkView(
+                            _bookmarkKey,
+                            _document,
+                            _pdfViewerController,
+                            _handleBookmarkViewChanged,
+                            _textDirection),
+                      ],
+                    );
+                  }
+                  // if have error
+                  else if (snapshot.hasError) {
+                    return emptyContainer;
+                  }
+                  // if nothing
+                  else {
+                    return emptyLinearProgressView;
+                  }
+                },
+              ),
             ),
           )
         : (_hasError

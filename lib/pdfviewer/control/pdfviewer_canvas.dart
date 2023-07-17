@@ -13,6 +13,8 @@ import '../common/pdfviewer_helper.dart';
 import 'pdf_page_view.dart';
 import 'pdf_scrollable.dart';
 import 'single_page_view.dart';
+import 'package:get/get.dart';
+import 'package:pdfreader2/controllers/reader_controller.dart';
 
 /// Instance of TextSelectionHelper.
 TextSelectionHelper _textSelectionHelper = TextSelectionHelper();
@@ -323,6 +325,8 @@ class CanvasRenderBox extends RenderBox {
 
   /// If true, hyperlink navigation is enabled.
   late bool enableHyperlinkNavigation;
+
+  ReaderController readCon = Get.find<ReaderController>();
 
   int? _viewId;
   int? _destinationPageIndex;

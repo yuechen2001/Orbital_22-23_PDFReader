@@ -50,9 +50,10 @@ class _ReaderScreenState extends State<ReaderScreen> {
                     File(widget.doc.docPath),
                     maxZoomLevel: double.infinity,
                     initialZoomLevel: computeZoomLevel(context),
-                    pageSpacing: 0.0,
+                    pageSpacing: 1.0,
+                    enableTextSelection: true,
                   ),
-                )
+                ),
               ],
             ),
           ),
@@ -72,6 +73,7 @@ class _SideBar extends StatefulWidget {
 class SideBar extends State<_SideBar> {
   // retrieve the document controller to refresh the db
   DocumentController docCon = Get.find<DocumentController>();
+  ReaderController readCon = Get.find<ReaderController>();
 
   @override
   Widget build(BuildContext context) {
@@ -118,6 +120,7 @@ class SideBar extends State<_SideBar> {
             height: 50.0,
             child: TextButton.icon(
               onPressed: () {
+                readCon.clearPages();
                 Get.back();
               },
               icon: const Icon(
@@ -274,7 +277,17 @@ class TopMenuBar extends State<_TopMenuBar> {
             ),
             // textbox
             TextButton.icon(
-              onPressed: () {},
+              onPressed: () async {
+                // case if button is in a clicked state
+                if (readCon.textBoxMode.value) {
+                  // toggle boolean switch to false. the user wants to revert to normal mode
+                  readCon.textBoxMode.value = false;
+                } else {
+                  // case if the button is in unclicked state
+                  // toggle boolean switch to true. the user wants to revert to textBoxMode to add textboxes
+                  readCon.textBoxMode.value = true;
+                }
+              },
               icon: const Icon(
                 Icons.edit,
                 color: Colors.white70,
