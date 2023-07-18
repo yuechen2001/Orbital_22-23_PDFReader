@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:pdfreader2/constants/widgets/pdf_page_view_with_annotations.dart';
+import 'package:pdfreader2/view/reader/pdf_with_annotations.dart';
 import 'package:pdfreader2/models/document_model.dart';
 
 class ReaderController extends GetxController {

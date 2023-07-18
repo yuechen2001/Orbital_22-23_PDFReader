@@ -28,8 +28,15 @@ class DocumentController extends GetxController {
           ? recentFiles.get(picked.name)!.annotations
           : [];
       // convert the file to a document object
-      Document doc =
-          Document(picked.name, picked.path!, formattedDate, now, false, l);
+      Document doc = Document(
+        docTitle: picked.name,
+        docPath: picked.path!,
+        docDate: formattedDate,
+        lastOpened: now,
+        favourited: false,
+        annotations: l,
+        folders: [],
+      );
       recentFiles.put(picked.name, doc);
       return doc;
     } else {

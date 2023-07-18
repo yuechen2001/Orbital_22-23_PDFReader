@@ -1,7 +1,6 @@
 import 'package:hive/hive.dart';
 
-// TODO: REFRESH DB 
-part 'document_model.g.dart';
+part 'hiveModels/document_model.g.dart';
 
 @HiveType(typeId: 0)
 class Document extends HiveObject {

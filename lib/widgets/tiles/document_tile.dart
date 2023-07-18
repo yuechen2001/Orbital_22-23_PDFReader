@@ -9,8 +9,12 @@ import '../../models/document_model.dart';
 import '../../view/reader/reader_screen.dart';
 
 class DocumentTile extends StatefulWidget {
-  const DocumentTile(
-      {super.key, this.folderName, required this.doc, required this.canDelete});
+  const DocumentTile({
+    super.key,
+    this.folderName,
+    required this.doc,
+    required this.canDelete,
+  });
 
   final String? folderName;
   final Document doc;
@@ -121,7 +125,7 @@ class _DocumentTileState extends State<DocumentTile> {
         } else {
           // case where the document exists in the user's local filesystem
           Document openedDoc =
-              docCon.updateLastOpened(docTitle: widget.doc.docTitle);
+              docCon.updateLastOpened(widget.doc.docTitle);
           // create a new readerscreen to open the document for viewing
           Get.to(ReaderScreen(doc: openedDoc));
         }

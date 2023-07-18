@@ -7,7 +7,7 @@ import 'package:window_manager/window_manager.dart';
 
 import 'controllers/document_controller.dart';
 import 'models/document_model.dart';
-import 'constants/widgets/textbox_widget.dart';
+import 'widgets/annotations/textbox.dart';
 
 final List<Box> boxes = [];
 

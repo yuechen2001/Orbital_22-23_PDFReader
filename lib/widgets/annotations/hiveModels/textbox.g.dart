@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of '../textbox_widget.dart';
+part of '../textbox.dart';
 
 // **************************************************************************
 // TypeAdapterGenerator

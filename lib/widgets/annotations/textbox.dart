@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 import 'package:pdfreader2/controllers/reader_controller.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
-part 'hiveModels/textbox_widget.g.dart';
+part 'hiveModels/textbox.g.dart';
 
 @HiveType(typeId: 1)
 // ignore: must_be_immutable

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:pdfreader2/view/reader/drawing_page.dart';
+// import 'package:pdfreader2/view/reader/drawing_page.dart';
 
 import '../controllers/document_controller.dart';
 import '../models/document_model.dart';
@@ -115,9 +115,9 @@ class SideNavigationBar extends StatelessWidget {
               color: Colors.white70,
             ),
             onTap: () {
-              if (currentPage != "Folders") {
-                Get.offAll(const DrawingPage());
-              }
+              // if (currentPage != "Folders") {
+              //   Get.offAll(const DrawingPage());
+              // }
             },
           ),
         ],
