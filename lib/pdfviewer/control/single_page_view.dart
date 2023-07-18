@@ -357,7 +357,6 @@ class SinglePageViewState extends State<SinglePageView> {
               width: isLandscape
                   ? childSize.width
                   : widget.viewportDimension.width,
-              // todo: add stack to this
               child: Center(
                 child: page,
               ),

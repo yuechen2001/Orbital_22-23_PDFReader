@@ -204,6 +204,7 @@ class PdfPageViewState extends State<PdfPageView> {
         RenderBox rb = context.findRenderObject() as RenderBox;
         readCon.maxX.value = rb.size.width;
         readCon.maxY.value = rb.size.height;
+        readCon.pdfController.value.zoomLevel = fitToScreen(context);
       },
     );
     if (kIsDesktop && !widget.isMobileWebView) {
@@ -233,11 +234,14 @@ class PdfPageViewState extends State<PdfPageView> {
 
   // function to expand the PDF file image to fill the PDF reader viewport
   double fitToScreen(BuildContext context) {
-    return MediaQuery.of(context).size.width / 670;
+    double res = readCon.maxX.value == 0
+        ? MediaQuery.of(context).size.width / 670
+        : MediaQuery.of(context).size.width / readCon.maxX.value;
+    return res;
   }
 
   // filters for the pdf document
-  final ColorFilter kDefaultFilter = const ColorFilter.matrix(<double>[
+  final ColorFilter kNormalFilter = const ColorFilter.matrix(<double>[
     1.0, 0.0, 0.0, 0.0, 0.0, //
     0.0, 1.0, 0.0, 0.0, 0.0, //
     0.0, 0.0, 1.0, 0.0, 0.0, //
@@ -288,7 +292,7 @@ class PdfPageViewState extends State<PdfPageView> {
       final Widget image = ColorFiltered(
         // add a colour filter to the PDF image, that can be changed by the user
         colorFilter: readCon.backgroundColour.value == "White"
-            ? kDefaultFilter
+            ? kNormalFilter
             : readCon.backgroundColour.value == "Dark"
                 ? kDarkFilter
                 : kSepiaFilter,

@@ -41,16 +41,13 @@ class _FavouritesScreenState extends State<FavouritesScreen> {
                       padding: EdgeInsets.zero,
                       color: Colors.white70,
                       onPressed: () {
-                        // todo: add logic for toggling the buttons
                         if (Scaffold.of(context).isDrawerOpen) {
                           // if drawer opened
                           // close the drawer
                           Scaffold.of(context).closeDrawer();
-                          // todo: change button orientation to face right
                         } else {
                           // if drawer closed
                           Scaffold.of(context).openDrawer();
-                          // todo: change button orientation to face left
                         }
                       },
                     );
