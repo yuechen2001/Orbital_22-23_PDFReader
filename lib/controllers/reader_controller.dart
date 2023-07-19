@@ -12,7 +12,7 @@ class ReaderController extends GetxController {
   RxDouble maxX = (0.0).obs;
   RxDouble maxY = (0.0).obs;
   RxDouble currentFontSize = (12.0).obs;
-  Rx<Color> currentColor = (Colors.black).obs;
+  Rx<Color> currentColor = (Colors.white70).obs;
   late Document doc;
   Rx<PdfViewerController> pdfController = PdfViewerController().obs;
 

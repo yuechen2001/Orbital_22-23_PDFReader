@@ -93,38 +93,40 @@ class _HomeScreenState extends State<HomeScreen> {
                                 color: Colors.white70)),
                       ),
                       const Divider(color: Colors.white),
-                      ValueListenableBuilder<Box<Document>>(
-                        valueListenable: docCon.recentFiles.listenable(),
-                        builder: (context, box, _) {
-                          if (box.values.isEmpty) {
-                            return const Center(
-                              child: Text("No Documents Found.",
-                                  style: TextStyle(
-                                    color: Colors.white70,
-                                  ),
-                                  overflow: TextOverflow.ellipsis),
-                            );
-                          }
-                          final sorted = box.values.toList()
-                            ..sort(
-                                (a, b) => b.lastOpened.compareTo(a.lastOpened));
-                          return ListView.separated(
-                            scrollDirection: Axis.vertical,
-                            shrinkWrap: true,
-                            itemCount: sorted.length,
-                            itemBuilder: (context, index) {
-                              Document doc = sorted.elementAt(index);
-                              return DocumentTile(
-                                doc: doc,
-                                canDelete: false,
+                      Expanded(
+                        child: ValueListenableBuilder<Box<Document>>(
+                          valueListenable: docCon.recentFiles.listenable(),
+                          builder: (context, box, _) {
+                            if (box.values.isEmpty) {
+                              return const Center(
+                                child: Text("No Documents Found.",
+                                    style: TextStyle(
+                                      color: Colors.white70,
+                                    ),
+                                    overflow: TextOverflow.ellipsis),
                               );
-                            },
-                            separatorBuilder:
-                                (BuildContext context, int index) {
-                              return const Divider(color: Colors.white10);
-                            },
-                          );
-                        },
+                            }
+                            final sorted = box.values.toList()
+                              ..sort(
+                                  (a, b) => b.lastOpened.compareTo(a.lastOpened));
+                            return ListView.separated(
+                              scrollDirection: Axis.vertical,
+                              shrinkWrap: true,
+                              itemCount: sorted.length,
+                              itemBuilder: (context, index) {
+                                Document doc = sorted.elementAt(index);
+                                return DocumentTile(
+                                  doc: doc,
+                                  canDelete: false,
+                                );
+                              },
+                              separatorBuilder:
+                                  (BuildContext context, int index) {
+                                return const Divider(color: Colors.white10);
+                              },
+                            );
+                          },
+                        ),
                       ),
                     ],
                   ),
