@@ -2502,7 +2502,6 @@ class SfPdfViewerState extends State<SfPdfViewer> with WidgetsBindingObserver {
       childWidth = viewportDimension.width > totalImageWidth
           ? viewportDimension.width / widthFactor.clamp(1, widget.maxZoomLevel)
           : totalImageWidth / widthFactor.clamp(1, widget.maxZoomLevel);
-
       double totalImageHeight = currentPageSize.height * zoomLevel;
       if (_scrollDirection == PdfScrollDirection.vertical) {
         totalImageHeight =

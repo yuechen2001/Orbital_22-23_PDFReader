@@ -41,16 +41,13 @@ class _FavouritesScreenState extends State<FavouritesScreen> {
                       padding: EdgeInsets.zero,
                       color: Colors.white70,
                       onPressed: () {
-                        // todo: add logic for toggling the buttons
                         if (Scaffold.of(context).isDrawerOpen) {
                           // if drawer opened
                           // close the drawer
                           Scaffold.of(context).closeDrawer();
-                          // todo: change button orientation to face right
                         } else {
                           // if drawer closed
                           Scaffold.of(context).openDrawer();
-                          // todo: change button orientation to face left
                         }
                       },
                     );
@@ -93,41 +90,43 @@ class _FavouritesScreenState extends State<FavouritesScreen> {
                                 color: Colors.white70)),
                       ),
                       const Divider(color: Colors.white),
-                      ValueListenableBuilder(
-                        valueListenable: docCon.recentFiles.listenable(),
-                        builder: (context, Box<Document> box, _) {
-                          final sorted = box.values
-                              .where((doc) => doc.favourited)
-                              .toList()
-                            ..sort(
-                                (a, b) => b.lastOpened.compareTo(a.lastOpened));
-                          if (sorted.isEmpty) {
-                            return const Center(
-                              child: Text("No Documents Found.",
-                                  style: TextStyle(
-                                    color: Colors.white70,
-                                  ),
-                                  overflow: TextOverflow.ellipsis),
-                            );
-                          } else {
-                            return ListView.separated(
-                              scrollDirection: Axis.vertical,
-                              shrinkWrap: true,
-                              itemCount: sorted.length,
-                              itemBuilder: (context, index) {
-                                Document doc = sorted[index];
-                                return DocumentTile(
-                                  doc: doc,
-                                  canDelete: false,
-                                );
-                              },
-                              separatorBuilder:
-                                  (BuildContext context, int index) {
-                                return const Divider(color: Colors.white10);
-                              },
-                            );
-                          }
-                        },
+                      Expanded(
+                        child: ValueListenableBuilder(
+                          valueListenable: docCon.recentFiles.listenable(),
+                          builder: (context, Box<Document> box, _) {
+                            final sorted = box.values
+                                .where((doc) => doc.favourited)
+                                .toList()
+                              ..sort(
+                                  (a, b) => b.lastOpened.compareTo(a.lastOpened));
+                            if (sorted.isEmpty) {
+                              return const Center(
+                                child: Text("No Documents Found.",
+                                    style: TextStyle(
+                                      color: Colors.white70,
+                                    ),
+                                    overflow: TextOverflow.ellipsis),
+                              );
+                            } else {
+                              return ListView.separated(
+                                scrollDirection: Axis.vertical,
+                                shrinkWrap: true,
+                                itemCount: sorted.length,
+                                itemBuilder: (context, index) {
+                                  Document doc = sorted[index];
+                                  return DocumentTile(
+                                    doc: doc,
+                                    canDelete: false,
+                                  );
+                                },
+                                separatorBuilder:
+                                    (BuildContext context, int index) {
+                                  return const Divider(color: Colors.white10);
+                                },
+                              );
+                            }
+                          },
+                        ),
                       ),
                     ],
                   ),

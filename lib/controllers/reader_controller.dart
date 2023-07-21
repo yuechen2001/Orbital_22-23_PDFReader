@@ -2,17 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:pdfreader2/view/reader/pdf_with_annotations.dart';
 import 'package:pdfreader2/models/document_model.dart';
+import 'package:pdfreader2/pdfviewer/pdf_viewer_library.dart';
 
 class ReaderController extends GetxController {
-  RxString backgroundColour = "White".obs;
+  RxString backgroundColour = "Dark".obs;
   RxBool textBoxMode = false.obs;
   List<PdfPageViewWithAnnotations> children = [];
   List<RxList> annotationsList = [];
   RxDouble maxX = (0.0).obs;
   RxDouble maxY = (0.0).obs;
   RxDouble currentFontSize = (12.0).obs;
-  Rx<Color> currentColor = (Colors.black).obs;
+  Rx<Color> currentColor = (Colors.white70).obs;
   late Document doc;
+  Rx<PdfViewerController> pdfController = PdfViewerController().obs;
 
   void updateMaxLocalBounds(double x, double y) {
     maxX.value = x;
@@ -81,6 +83,10 @@ class ReaderController extends GetxController {
       doc.annotations.add([...annotationsList[i]]);
     }
     clearPages();
+  }
+
+  void savePageNumber(int page) {
+    doc.lastPageOpened = page;
   }
 
   @override

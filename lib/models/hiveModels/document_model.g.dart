@@ -26,13 +26,14 @@ class DocumentAdapter extends TypeAdapter<Document> {
           .map((dynamic e) => (e as List).cast<dynamic>())
           .toList(),
       folders: (fields[6] as List).cast<String>(),
+      lastPageOpened: fields[7] as int,
     );
   }
 
   @override
   void write(BinaryWriter writer, Document obj) {
     writer
-      ..writeByte(7)
+      ..writeByte(8)
       ..writeByte(0)
       ..write(obj.docTitle)
       ..writeByte(1)
@@ -46,7 +47,9 @@ class DocumentAdapter extends TypeAdapter<Document> {
       ..writeByte(5)
       ..write(obj.annotations)
       ..writeByte(6)
-      ..write(obj.folders);
+      ..write(obj.folders)
+      ..writeByte(7)
+      ..write(obj.lastPageOpened);
   }
 
   @override

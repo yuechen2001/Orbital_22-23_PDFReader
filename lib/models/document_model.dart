@@ -18,15 +18,19 @@ class Document extends HiveObject {
   List<List<dynamic>> annotations;
   @HiveField(6)
   List<String> folders;
+  @HiveField(7)
+  int lastPageOpened;
 
-  Document(
-      {required this.docTitle,
-      required this.docPath,
-      required this.docDate,
-      required this.lastOpened,
-      required this.favourited,
-      required this.annotations,
-      required this.folders});
+  Document({
+    required this.docTitle,
+    required this.docPath,
+    required this.docDate,
+    required this.lastOpened,
+    required this.favourited,
+    required this.annotations,
+    required this.folders,
+    required this.lastPageOpened,
+  });
 
   // check whether two documents are equal to each other
   @override
