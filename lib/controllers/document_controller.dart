@@ -23,6 +23,8 @@ class DocumentController extends GetxController {
     if (picked != null) {
       DateTime now = DateTime.now();
       String formattedDate = DateFormat('EEEE, MMM d, yyyy').format(now);
+      String docTitle = picked.name;
+      String formattedTitle = docTitle.substring(0, docTitle.lastIndexOf('.'));
       // get the annotations list if doc exists, else set as null
       List<List<dynamic>> l;
       // get the last page opened if doc exists, else set as 0
@@ -36,7 +38,7 @@ class DocumentController extends GetxController {
       }
       // convert the file to a document object
       Document doc = Document(
-        docTitle: picked.name,
+        docTitle: formattedTitle,
         docPath: picked.path!,
         docDate: formattedDate,
         lastOpened: now,
@@ -45,7 +47,7 @@ class DocumentController extends GetxController {
         folders: [],
         lastPageOpened: page,
       );
-      recentFiles.put(picked.name, doc);
+      recentFiles.put(formattedTitle, doc);
       return doc;
     } else {
       return null;
@@ -76,7 +78,7 @@ class DocumentController extends GetxController {
 
     // convert the file to a document object
     Document doc = Document(
-      docTitle: curr.docTitle,
+      docTitle: docTitle,
       docPath: curr.docPath,
       docDate: formattedDate,
       lastOpened: now,
@@ -85,7 +87,7 @@ class DocumentController extends GetxController {
       folders: curr.folders,
       lastPageOpened: curr.lastPageOpened,
     );
-    recentFiles.put(doc.docTitle, doc);
+    recentFiles.put(docTitle, doc);
 
     return doc;
   }

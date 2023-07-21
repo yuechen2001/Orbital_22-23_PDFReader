@@ -56,7 +56,7 @@ class _DeleteButton extends StatelessWidget {
                 backgroundColor: const Color.fromARGB(221, 39, 38, 38),
                 elevation: 24.0,
                 title: const Text(
-                  'Are you sure about deleting this folder?',
+                  'Delete folder?',
                   style: TextStyle(
                     color: Colors.white70,
                   ),
