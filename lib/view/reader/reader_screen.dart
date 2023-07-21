@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:pdfreader2/controllers/reader_controller.dart';
 import 'package:pdfreader2/models/document_model.dart';
@@ -18,7 +19,17 @@ class ReaderScreen extends StatefulWidget {
 }
 
 class _ReaderScreenState extends State<ReaderScreen> {
-  ReaderController readCon = Get.put(ReaderController());
+  ReaderController readCon = Get.put<ReaderController>(ReaderController());
+  // pdf controller for various features
+  PdfViewerController _pdfViewerController = PdfViewerController();
+
+  @override
+  void initState() {
+    super.initState();
+    readCon.setDoc(widget.doc);
+    _pdfViewerController = readCon.pdfController.value;
+    _pdfViewerController.jumpToPage(widget.doc.lastPageOpened);
+  }
 
   @override
   void dispose() {
@@ -29,7 +40,10 @@ class _ReaderScreenState extends State<ReaderScreen> {
 
   // method to compute the initial zoom level
   double computeZoomLevel(BuildContext context) {
-    return MediaQuery.of(context).size.width / 670;
+    double res = readCon.maxX.value == 0
+        ? MediaQuery.of(context).size.width / 670
+        : MediaQuery.of(context).size.width / readCon.maxX.value;
+    return res;
   }
 
   @override
@@ -43,16 +57,89 @@ class _ReaderScreenState extends State<ReaderScreen> {
                 // component 2: the edit menu
                 _TopMenuBar(
                   doc: widget.doc,
+                  pdfViewerController: _pdfViewerController,
                 ),
                 // component 3: the PDF view screen
                 Expanded(
-                  child: SfPdfViewer.file(
-                    File(widget.doc.docPath),
-                    maxZoomLevel: double.infinity,
-                    initialZoomLevel: computeZoomLevel(context),
-                    pageSpacing: 0.0,
+                  child: Stack(
+                    children: [
+                      SfPdfViewer.file(
+                        File(widget.doc.docPath),
+                        maxZoomLevel: double.infinity,
+                        controller: _pdfViewerController,
+                        initialZoomLevel: computeZoomLevel(context),
+                        pageSpacing: 0.5,
+                        enableTextSelection: true,
+                      ),
+                      Positioned(
+                        right: 0.0,
+                        bottom: 0.0,
+                        width: 150.0,
+                        height: 100.0,
+                        child: Obx(
+                          () => Row(
+                            children: [
+                              Tooltip(
+                                message: 'Fit to Screen (Ctrl 0)',
+                                child: IconButton(
+                                  iconSize: 25.0,
+                                  padding: EdgeInsets.zero,
+                                  color: readCon.currentColor.value,
+                                  onPressed: () {
+                                    setState(
+                                      () {
+                                        _pdfViewerController.zoomLevel = computeZoomLevel(context);
+                                      },
+                                    );
+                                  },
+                                  icon: const Icon(
+                                    Icons.fit_screen,
+                                  ),
+                                ),
+                              ),
+                              Tooltip(
+                                message: 'Zoom Out (Ctrl -)',
+                                child: IconButton(
+                                  iconSize: 25.0,
+                                  padding: EdgeInsets.zero,
+                                  color: readCon.currentColor.value,
+                                  onPressed: () {
+                                    setState(
+                                      () {
+                                        _pdfViewerController.zoomLevel -= 0.25;
+                                      },
+                                    );
+                                  },
+                                  icon: const Icon(
+                                    Icons.zoom_out_sharp,
+                                  ),
+                                ),
+                              ),
+                              Tooltip(
+                                message: 'Zoom In (Ctrl +)',
+                                child: IconButton(
+                                  iconSize: 25.0,
+                                  padding: EdgeInsets.zero,
+                                  color: readCon.currentColor.value,
+                                  onPressed: () {
+                                    setState(
+                                      () {
+                                        _pdfViewerController.zoomLevel += 0.25;
+                                      },
+                                    );
+                                  },
+                                  icon: const Icon(
+                                    Icons.zoom_in_sharp,
+                                  ),
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                      )
+                    ],
                   ),
-                )
+                ),
               ],
             ),
           ),
@@ -72,6 +159,7 @@ class _SideBar extends StatefulWidget {
 class SideBar extends State<_SideBar> {
   // retrieve the document controller to refresh the db
   DocumentController docCon = Get.find<DocumentController>();
+  ReaderController readCon = Get.find<ReaderController>();
 
   @override
   Widget build(BuildContext context) {
@@ -118,6 +206,8 @@ class SideBar extends State<_SideBar> {
             height: 50.0,
             child: TextButton.icon(
               onPressed: () {
+                readCon.saveAnnotations();
+                readCon.clearPages();
                 Get.back();
               },
               icon: const Icon(
@@ -138,9 +228,12 @@ class SideBar extends State<_SideBar> {
 
 // ignore: must_be_immutable
 class _TopMenuBar extends StatefulWidget {
-  const _TopMenuBar({Key? key, required this.doc}) : super(key: key);
+  const _TopMenuBar(
+      {Key? key, required this.doc, required this.pdfViewerController})
+      : super(key: key);
 
   final Document doc;
+  final PdfViewerController pdfViewerController;
 
   @override
   State<_TopMenuBar> createState() => TopMenuBar();
@@ -164,8 +257,8 @@ class TopMenuBar extends State<_TopMenuBar> {
 
   // items list to populate background colours menu
   List<String> backgroundColourOptions = [
-    "White",
     "Dark",
+    "White",
     "Sepia",
   ];
 
@@ -195,6 +288,8 @@ class TopMenuBar extends State<_TopMenuBar> {
           children: [
             TextButton.icon(
               onPressed: () {
+                readCon.savePageNumber(widget.pdfViewerController.pageNumber);
+                readCon.saveAnnotations();
                 docCon.removeMissingDocuments();
                 Get.back();
               },
@@ -274,7 +369,17 @@ class TopMenuBar extends State<_TopMenuBar> {
             ),
             // textbox
             TextButton.icon(
-              onPressed: () {},
+              onPressed: () async {
+                // case if button is in a clicked state
+                if (readCon.textBoxMode.value) {
+                  // toggle boolean switch to false. the user wants to revert to normal mode
+                  readCon.textBoxMode.value = false;
+                } else {
+                  // case if the button is in unclicked state
+                  // toggle boolean switch to true. the user wants to revert to textBoxMode to add textboxes
+                  readCon.textBoxMode.value = true;
+                }
+              },
               icon: const Icon(
                 Icons.edit,
                 color: Colors.white70,
@@ -282,18 +387,6 @@ class TopMenuBar extends State<_TopMenuBar> {
               label: const Text(
                 "Textbox",
                 overflow: TextOverflow.ellipsis,
-                style: TextStyle(color: Colors.white70),
-              ),
-            ),
-            // draw
-            TextButton.icon(
-              onPressed: () {},
-              icon: const Icon(
-                Icons.draw,
-                color: Colors.white70,
-              ),
-              label: const Text(
-                "Draw",
                 style: TextStyle(color: Colors.white70),
               ),
             ),

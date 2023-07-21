@@ -23,10 +23,31 @@ class DocumentController extends GetxController {
     if (picked != null) {
       DateTime now = DateTime.now();
       String formattedDate = DateFormat('EEEE, MMM d, yyyy').format(now);
+      String docTitle = picked.name;
+      String formattedTitle = docTitle.substring(0, docTitle.lastIndexOf('.'));
+      // get the annotations list if doc exists, else set as null
+      List<List<dynamic>> l;
+      // get the last page opened if doc exists, else set as 0
+      int page;
+      if (recentFiles.containsKey(picked.name)) {
+        l = recentFiles.get(picked.name)!.annotations;
+        page = recentFiles.get(picked.name)!.lastPageOpened;
+      } else {
+        l = [];
+        page = 0;
+      }
       // convert the file to a document object
-      Document doc =
-          Document(picked.name, picked.path!, formattedDate, now, false);
-      recentFiles.put(picked.name, doc);
+      Document doc = Document(
+        docTitle: formattedTitle,
+        docPath: picked.path!,
+        docDate: formattedDate,
+        lastOpened: now,
+        favourited: false,
+        annotations: l,
+        folders: [],
+        lastPageOpened: page,
+      );
+      recentFiles.put(formattedTitle, doc);
       return doc;
     } else {
       return null;
@@ -48,7 +69,7 @@ class DocumentController extends GetxController {
     return file;
   }
 
-  Document updateLastOpened({required String docTitle}) {
+  Document updateLastOpened(String docTitle) {
     Document curr = recentFiles.get(docTitle)!;
 
     // update the last opened time
@@ -57,15 +78,34 @@ class DocumentController extends GetxController {
 
     // convert the file to a document object
     Document doc = Document(
-        curr.docTitle, curr.docPath, formattedDate, now, curr.favourited);
-    recentFiles.put(doc.docTitle, doc);
+      docTitle: docTitle,
+      docPath: curr.docPath,
+      docDate: formattedDate,
+      lastOpened: now,
+      favourited: curr.favourited,
+      annotations: curr.annotations,
+      folders: curr.folders,
+      lastPageOpened: curr.lastPageOpened,
+    );
+    recentFiles.put(docTitle, doc);
 
     return doc;
   }
 
-  void clearRecentFiles() {
-    recentFiles.clear();
-    update();
+  void addToFolder(String folderName, String docTitle) {
+    Document curr = recentFiles.get(docTitle)!;
+
+    // update the folder list
+    curr.folders.add(folderName);
+    recentFiles.put(docTitle, curr);
+  }
+
+  void removeFromFolder(String folderName, String docTitle) {
+    Document curr = recentFiles.get(docTitle)!;
+
+    // update the folder list
+    curr.folders.remove(folderName);
+    recentFiles.put(docTitle, curr);
   }
 
   // method that will loop over all the files in the db, deleting any files
@@ -81,6 +121,11 @@ class DocumentController extends GetxController {
         recentFiles.delete(file.key);
       }
     }
+  }
+
+  void clearRecentFiles() {
+    recentFiles.clear();
+    update();
   }
 
   @override

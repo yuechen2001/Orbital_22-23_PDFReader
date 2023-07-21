@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:pdfreader2/controllers/reader_controller.dart';
+import 'package:get/get.dart';
 import 'package:syncfusion_flutter_core/interactive_scroll_viewer_internal.dart';
 import 'package:syncfusion_flutter_core/localizations.dart';
 import 'package:syncfusion_flutter_core/theme.dart';
@@ -287,6 +289,8 @@ class ScrollHeadOverlayState extends State<ScrollHeadOverlay> {
     return offset;
   }
 
+  ReaderController readCon = Get.find<ReaderController>();
+
   @override
   Widget build(BuildContext context) {
     WidgetsBinding.instance.addPostFrameCallback((Duration timeStamp) {
@@ -384,8 +388,9 @@ class ScrollHeadOverlayState extends State<ScrollHeadOverlay> {
                   PdfPageLayoutMode.continuous)),
         ),
         Visibility(
-            visible: isScrollHeadDragged && widget.canShowScrollStatus,
-            child: ScrollStatus(widget.pdfViewerController)),
+          visible: isScrollHeadDragged && widget.canShowScrollStatus,
+          child: ScrollStatus(widget.pdfViewerController),
+        ),
       ],
     );
   }

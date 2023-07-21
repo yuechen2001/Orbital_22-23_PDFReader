@@ -108,6 +108,7 @@ class PdfViewerPlugin {
       _renderingPages?.clear();
       return _renderedPages;
     }
+    // GET ALL PAGES
     for (int pageIndex = startPageIndex;
         pageIndex <= endPageIndex;
         pageIndex++) {

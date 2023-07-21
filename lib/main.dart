@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:pdfreader2/view/favourites_screen.dart';
-import 'package:pdfreader2/view/home_screen.dart';
+import 'package:pdfreader2/view/home/home_screen.dart';
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
 import 'package:window_manager/window_manager.dart';
 
+import 'controllers/document_controller.dart';
 import 'models/document_model.dart';
+import 'widgets/annotations/textbox.dart';
 
 final List<Box> boxes = [];
 
 // Function to register all Hive Models that we are using in our application
 void _registerAdapter() {
   Hive.registerAdapter<Document>(DocumentAdapter());
+  Hive.registerAdapter<TextboxWidget>(TextboxWidgetAdapter());
 }
 
 // Establish connection to Hive
@@ -26,8 +28,10 @@ Future<List<Box>> _openBox() async {
 
     // Establish link to local storage
     var recentFiles = await Hive.openBox<Document>("recent_files");
+    var existingFolders = await Hive.openBox<String>("existing_folders");
 
     boxes.add(recentFiles);
+    boxes.add(existingFolders);
     return boxes;
   } catch (error) {
     rethrow;
@@ -60,19 +64,15 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // init the document controller
+    Get.put(DocumentController());
     return GetMaterialApp(
       initialRoute: '/',
       getPages: [
         GetPage(
-          name: '/',
-          page: () => const HomeScreen(),
-          transition: Transition.cupertino
-        ),
-        GetPage(
-          name: '/favourites',
-          page: () => const FavouritesScreen(),
-          transition: Transition.cupertino,
-        ),
+            name: '/',
+            page: () => const HomeScreen(),
+            transition: Transition.cupertino),
       ],
     );
   }
