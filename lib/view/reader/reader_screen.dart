@@ -307,18 +307,6 @@ class TopMenuBar extends State<_TopMenuBar> {
                 style: TextStyle(color: Colors.white70),
               ),
             ),
-            // draw
-            TextButton.icon(
-              onPressed: () {},
-              icon: const Icon(
-                Icons.draw,
-                color: Colors.white70,
-              ),
-              label: const Text(
-                "Draw",
-                style: TextStyle(color: Colors.white70),
-              ),
-            ),
             // favourite
             TextButton.icon(
               onPressed: () {
