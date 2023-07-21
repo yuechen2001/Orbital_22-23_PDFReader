@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-// import 'package:pdfreader2/view/reader/drawing_page.dart';
 
 import '../controllers/document_controller.dart';
 import '../models/document_model.dart';
@@ -100,24 +99,6 @@ class SideNavigationBar extends StatelessWidget {
               if (currentPage != "Folders") {
                 Get.offAll(const FoldersScreen());
               }
-            },
-          ),
-          ListTile(
-            title: Transform.translate(
-              offset: const Offset(-20, 0),
-              child: const Text(
-                'Drawing',
-                style: TextStyle(color: Colors.white70),
-              ),
-            ),
-            leading: const Icon(
-              Icons.folder_rounded,
-              color: Colors.white70,
-            ),
-            onTap: () {
-              // if (currentPage != "Folders") {
-              //   Get.offAll(const DrawingPage());
-              // }
             },
           ),
         ],
