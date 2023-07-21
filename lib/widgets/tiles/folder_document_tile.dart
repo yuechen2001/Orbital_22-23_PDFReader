@@ -12,17 +12,6 @@ class FolderDocumentTile extends StatelessWidget {
   final String folderName;
   final DocumentController docCon = Get.find<DocumentController>();
 
-  // constants for favourite icon of the document tile
-  static Icon unfavouritedIcon = const Icon(
-    Icons.star,
-    color: Colors.yellow,
-  );
-
-  static Icon favouritedIcon = const Icon(
-    Icons.star_border_outlined,
-    color: Colors.white70,
-  );
-
   @override
   Widget build(BuildContext context) {
     Future<void> handleMissingFile() async {

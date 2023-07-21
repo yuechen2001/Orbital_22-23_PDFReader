@@ -52,7 +52,7 @@ class _DocumentTileState extends State<DocumentTile> {
             ),
           ),
           content: const Text(
-            'You can always add the file back again if you want to!',
+            'You can always add the file back again from the main page.',
             style: TextStyle(
               color: Colors.white70,
             ),
@@ -113,6 +113,54 @@ class _DocumentTileState extends State<DocumentTile> {
                 ]));
   }
 
+  Future<void> _handleUnfavouriteFile() async {
+    // show warning only when unfavouriting files
+    if (widget.doc.favourited) {
+      showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (BuildContext context) => AlertDialog(
+                  backgroundColor: const Color.fromARGB(221, 39, 38, 38),
+                  elevation: 24.0,
+                  title: const Text(
+                    'Unfavourite file?',
+                    style: TextStyle(
+                      color: Colors.white70,
+                    ),
+                  ),
+                  content: const Text(
+                    'You can always favourite the file again from the main page.',
+                    style: TextStyle(
+                      color: Colors.white70,
+                    ),
+                  ),
+                  actions: [
+                    TextButton(
+                      onPressed: () {
+                        FavouriteController favCon = Get.put(
+                          FavouriteController(doc: widget.doc),
+                        );
+                        favCon.toggleFavourite();
+                        favCon.dispose();
+                        Get.back();
+                      },
+                      child: const Text(
+                        'Ok',
+                        style: TextStyle(
+                          color: Colors.white70,
+                        ),
+                      ),
+                    )
+                  ]));
+    } else {
+      FavouriteController favCon = Get.put(
+        FavouriteController(doc: widget.doc),
+      );
+      favCon.toggleFavourite();
+      favCon.dispose();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return ListTile(
@@ -124,8 +172,7 @@ class _DocumentTileState extends State<DocumentTile> {
           _handleMissingFile();
         } else {
           // case where the document exists in the user's local filesystem
-          Document openedDoc =
-              docCon.updateLastOpened(widget.doc.docTitle);
+          Document openedDoc = docCon.updateLastOpened(widget.doc.docTitle);
           // create a new readerscreen to open the document for viewing
           Get.to(ReaderScreen(doc: openedDoc));
         }
@@ -143,11 +190,7 @@ class _DocumentTileState extends State<DocumentTile> {
         children: [
           GestureDetector(
             onTap: () {
-              FavouriteController favCon = Get.put(
-                FavouriteController(doc: widget.doc),
-              );
-              favCon.toggleFavourite();
-              favCon.dispose();
+              _handleUnfavouriteFile();
             },
             child: ValueListenableBuilder<Box<Document>>(
               valueListenable: docCon.recentFiles.listenable(),
