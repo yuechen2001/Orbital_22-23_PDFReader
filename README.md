@@ -20,7 +20,3 @@
 > If there are any warnings about the installers being a virus, do ignore them
 - Open and set up the installer
 - Try out our app! Load PDF files from your own local filesystem
-> Note that the following features are yet to have functionality:
-> - Folder (Home / Favourites Screen)
-> - Textbox (Reader Screen)
-> - Draw (Reader Screen)
