@@ -20,3 +20,4 @@
 > If there are any warnings about the installers being a virus, do ignore them
 - Open and set up the installer
 - Try out our app! Load PDF files from your own local filesystem
+- Note: Before running the app, please delete any files named recent_files or existing_folders, ending with the extension .hive or .lock, if you have ran our milestone 2 version before.
