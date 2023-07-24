@@ -16,7 +16,7 @@
 > Recommended emulators:  
 > - [VirtualBox](https://www.virtualbox.org/)  
 > - [Parallels](https://www.parallels.com/)(Note: It is not free but it has a paid version)  
-- Download the installer through our most recent [release page](https://github.com/yuechen2001/Orbital_22-23_PDFReader/releases/tag/v1.0.0)!
+- Download the installer through our most recent [release page](https://github.com/yuechen2001/Orbital_22-23_PDFReader/releases/tag/v1.1.0)!
 > If there are any warnings about the installers being a virus, do ignore them
 - Open and set up the installer
 - Try out our app! Load PDF files from your own local filesystem
