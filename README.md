@@ -1,4 +1,4 @@
-# PDF Reader
+# The PDF Tailor
 
 ## Features
 - Three background colours available: Default, Dark, and Sepia
