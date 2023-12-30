@@ -4,6 +4,7 @@
 - Three background colours available: Default, Dark, and Sepia
 - Allows zooming in and out of PDF file
 - Favourite files you need the most from the reader screen
+- Create folders to keep your files organised
 - Save your most recently opened files
 - Automatically remove files that no longer exist on the local filesystem
 
