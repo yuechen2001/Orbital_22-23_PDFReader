@@ -1,11 +1,12 @@
 # The PDF Tailor
 
 ## Features
-- Three background colours available: Default, Dark, and Sepia
-- Allows zooming in and out of PDF file
-- Favourite files you need the most from the reader screen
+- Three background colours are available: Default, Dark, and Sepia
+- Annotate your PDF files with our in-built Textbox feature
+- Zoom in and out of PDF files
+- Favourite files you need the most
 - Create folders to keep your files organised
-- Save your most recently opened files
+- Track your most recently opened files
 - Automatically remove files that no longer exist on the local filesystem
 
 ## Built Using
