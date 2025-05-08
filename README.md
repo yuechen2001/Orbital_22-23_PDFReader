@@ -1,4 +1,4 @@
-# 📘 PDF Tailor – A Customizable PDF Reader
+# PDF Tailor – A Customizable PDF Reader
 
 > **An offline Flutter-based PDF reader for students, TAs, and educators that enhances readability, accessibility, and productivity.**
 
@@ -33,29 +33,38 @@ Unlike mainstream PDF readers:
 - Teaching Assistants
 - Professors
 
-## 📄 User Stories
-
-- "As a student, I want to style notes for readability."
-- "As a TA, I want to annotate and review submissions offline."
-- "As a user, I want to favorite and access key PDFs easily."
-
 ## 📈 Development Milestones
+### Milestone 1: Foundational Features
+- **PDF Viewer Integration**  
+  Implemented core functionality for reading local PDF files with zoom and scroll.
+- **Dark, Light, and Sepia Modes**  
+  Developed a transformation matrix algorithm to apply real-time visual filters to PDFs, improving readability.
+- **Zoom Controls**  
+  Added UI buttons and keyboard shortcuts (`Ctrl +`, `Ctrl -`, `Ctrl 0`) to zoom in, zoom out, and fit to screen.
 
-**Milestone 1 & 2**
-- Background styling
-- Recent & favorite files
-- Zoom controls and view-fit
+### Milestone 2: Usability & Storage
+- **Favorites and Recent Files Tracking**  
+  Enabled users to mark documents as favorites and access recently opened files easily using HiveDB.
+- **Directory Picker & File Importing**  
+  Integrated OS-level file picker for loading PDFs from local storage.
+- **Local Persistence with HiveDB**  
+  Introduced schema-based NoSQL storage for maintaining file metadata (favorites, last viewed page, etc.).
+- **Persistent UI State**  
+  Stored last zoom level and page visited for each PDF session.
 
-**Milestone 3**
-- Annotations with text boxes
-- Folder-based file organization
-- Persistent file states (e.g., zoom level, last page)
-
-## 🧪 Testing & QA
-
-- Manual unit, integration, and beta testing
-- Bugs fixed around UI, state persistence, and file handling
-- Limitations: No authentication, no in-app file search, draw feature omitted
+### Milestone 3: Annotation & Folder System
+- **Text Box Annotations**  
+  Implemented drag-and-drop resizable text boxes that persist across sessions.
+- **Folder-Based File Organization**  
+  Allowed users to group and navigate PDFs by folders for better categorization (e.g., modules, topics).
+- **State Restoration**  
+  On reopening a file, restored:
+  - Last opened page
+  - Previous zoom level
+  - Background styling mode
+  - Text box positions and content
+- **File Deletion Handling**  
+  Automatically detected deleted files from the system and updated the UI gracefully to prevent crashes.
 
 ## 🔐 Software Engineering Principles
 
@@ -70,8 +79,3 @@ Unlike mainstream PDF readers:
 - 🧩 [Database Diagrams](https://app.quickdatabasediagrams.com/#/d/RF7NQk)
 - 🌀 [Miro User Flow](https://miro.com/app/board/uXjVMGtjR6s=/?share_link_id=317114513411)
 
-## 🏁 Final Thoughts
-
-Orbital offered us a full-cycle development experience—from ideation and UI design to debugging and testing. Through challenges and iterations, we've built a solution that truly caters to academic needs, and we're excited to share it with fellow learners.
-
----
