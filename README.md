@@ -74,7 +74,6 @@ Unlike mainstream PDF readers:
 
 ## 📎 Links
 
-- 🔗 [GitHub Repository](https://github.com/yuechen2001/Orbital_22-23_PDFReader)
 - 🧠 [Figma Design](https://www.figma.com/file/DT9utFP1LzuFQiio9x30xP/The-PDF-Tailor)
 - 🧩 [Database Diagrams](https://app.quickdatabasediagrams.com/#/d/RF7NQk)
 - 🌀 [Miro User Flow](https://miro.com/app/board/uXjVMGtjR6s=/?share_link_id=317114513411)
