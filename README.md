@@ -6,6 +6,10 @@
 
 PDF Tailor allows users to download, organize, style, and annotate PDF files—offline. Born from the frustrations of black-and-white study materials, this tool aims to enhance readability with features like dark mode, annotation, and intuitive organization.
 
+## 📦 Download the App
+
+You can download the latest version of our application from the **Releases** section of this repository!
+
 ## ✨ Key Features
 
 - 🎨 **Background Color Modes** – Light, Dark, and Sepia filters using transformation matrices.
@@ -26,12 +30,6 @@ Unlike mainstream PDF readers:
 
 - **Frontend**: Flutter (Dart)
 - **Backend**: HiveDB (NoSQL local storage)
-
-## 👥 Target Audience
-
-- University Students
-- Teaching Assistants
-- Professors
 
 ## 📈 Development Milestones
 ### Milestone 1: Foundational Features
